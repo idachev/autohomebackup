@@ -1,8 +1,8 @@
 #!/bin/bash
 #
 # Auto Home Backup Script
-# VER. 1.0.0 - http://todo
-# Copyright (c) 2016 i_dachev@yahoo.co.uk
+# VER. 1.0.0 - https://github.com/idachev/autohomebackup
+# Copyright (c) 2016 Ivan Dachev
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,8 +26,8 @@ CONFIG_FILE="~/.autohomebackup.conf"
 PROGNAME=`basename $0`
 
 VERSION=1.0.0             # Version Number
-CODE_LINK="http://TODO"   # Linik to the code
-DONATE_LINK="http://TODO" # Link to donate
+CODE_LINK="https://github.com/idachev/autohomebackup"   # Linik to the code
+DONATE_LINK="https://github.com/idachev/autohomebackup" # Link to donate
 DEBUG=0
 
 # Look for optional config file parameter

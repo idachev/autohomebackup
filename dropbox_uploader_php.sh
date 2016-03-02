@@ -1,8 +1,8 @@
 #!/bin/bash
 #
 # Auto Home Backup Dropbox Uploader PHP Script
-# It uses the https://github.com/dropbox/dropbox-sdk-php
-# Copyright (c) 2016 i_dachev@yahoo.co.uk
+# VER. 1.0.0 - https://github.com/idachev/autohomebackup
+# Copyright (c) 2016 Ivan Dachev
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,6 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+# It uses the https://github.com/dropbox/dropbox-sdk-php
 #
 #=====================================================================
 #set -x
