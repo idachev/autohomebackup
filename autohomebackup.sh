@@ -67,11 +67,11 @@ fi
 #=====================================================================
 
 if [ -r ${CONFIG_FILE} ]; then
-  # Read the configfile if it's existing and readable
+  # Read the config file if it's existing and readable
   source ${CONFIG_FILE}
 else
   # do inline-config otherwise
-  # To create a configfile just copy the code between
+  # To create a config file just copy the code between
   # "### START CFG ###" and "### END CFG ###" to .autohomebackup.conf
   # After that you're able to upgrade this script
   # (copy a new version to its location) without the need for editing it.
@@ -134,7 +134,7 @@ else
 fi
 
 #=====================================================================
-# Options documantation
+# Options documentation
 #=====================================================================
 # TODO
 #
@@ -142,12 +142,12 @@ fi
 # to set executable permission. You can also copy the script to
 # /etc/cron.daily to have it execute automatically every night or simply
 # place a symlink in /etc/cron.daily to the file if you wish to keep it
-# somwhere else.
+# somewhere else.
 #
-# NOTE:On Debian copy the file with no extention for it to be run
+# NOTE:On Debian copy the file with no extension for it to be run
 # by cron e.g just name the file "autohomebackup"
 #
-# Thats it..
+# That's it..
 #
 # === Advanced options doc's ===
 #
@@ -158,7 +158,7 @@ fi
 # Please Note!!
 #=====================================================================
 #
-# I take no resposibility for any data loss or corruption when using
+# I take no responsibility for any data loss or corruption when using
 # this script..
 # This script will not help in the event of a hard drive crash. If a
 # copy of the backup has not be stored offline or on another PC..
@@ -191,7 +191,7 @@ fi
 #=====================================================================
 #=====================================================================
 #
-# Full pathname to binaries to avoid problems with aliases and builtins etc.
+# Full pathname to binaries to avoid problems with aliases etc.
 #
 WHICH="`which which`"
 if [ "x${WHICH}" = "x" ]; then
@@ -343,7 +343,7 @@ else
   HOST=${BACKUPHOST}
 fi
 
-# Build tar esclude options
+# Build tar exclude options
 OPT_EXCLUDE=""
 for i in "${EXCLUDE[@]}"
 do
@@ -369,7 +369,8 @@ fi
 ${NICENESS} ${TAR} ${TAR_OPT} "${BACKUPFILE}" ${OPT_EXCLUDE} -C / "${DIRTOBACKUP}"
 
 ${ECHO}
-${ECHO} Uploading to Dropbox `${DU} -hs "${BACKUPFILE}"`
+${ECHO} Uploading to Dropbox Start Time `${DATEC}`
+${ECHO} `${DU} -hs "${BACKUPFILE}"`
 #${NICENESS} ${DROPBOX_UPLOADER} -f "${DROPBOX_UPLOADER_CONFIG}" upload "${BACKUPFILE}" "${DST_BACKUPFILE}"
 ${NICENESS} ${DROPBOX_UPLOADER_PHP} "${DROPBOX_UPLOADER_CONFIG_PHP}" "${BACKUPFILE}" "${DST_BACKUPFILE}"
 ${ECHO}
