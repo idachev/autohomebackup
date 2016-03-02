@@ -12,6 +12,12 @@ What it does is to archive your home directory and upload that archive file to y
 
 You can make several config files and several cron jobs for them. With that you can backup different parts of your server with different options. Especially useful if you have multiple web sites on a single hosting account with add-on domains.
 
+## Buy Me a Drink
+
+If you like the scripts here and they save you valuable time and efforts you can buy me a drink or two here:
+:coffee: :beers: [Buy Me a Drink :cocktail:](http://4ui.us/tpit) :tropical_drink: :wine_glass: :tea:
+
+
 ## Requirements
 
 Download the latest [Dropbox PHP SDK](https://github.com/dropbox/dropbox-sdk-php)

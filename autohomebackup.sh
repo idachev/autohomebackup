@@ -25,9 +25,9 @@
 CONFIG_FILE="~/.autohomebackup.conf"
 PROGNAME=`basename $0`
 
-VERSION=1.0.0             # Version Number
-CODE_LINK="https://github.com/idachev/autohomebackup"   # Linik to the code
-DONATE_LINK="https://github.com/idachev/autohomebackup" # Link to donate
+VERSION=1.0.0                                          # Version Number
+CODE_LINK="https://github.com/idachev/autohomebackup"  # Link to the code
+DONATE_LINK="http://4ui.us/yqso"                       # Link to donate
 DEBUG=0
 
 # Look for optional config file parameter
