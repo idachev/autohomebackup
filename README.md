@@ -39,8 +39,8 @@ Examples below are assuming that you uploaded the script files and [Dropbox PHP 
 
 ### Cron Jobs
 ```
-0    1    *    *    *    /home/<cpaneluser>/bin/autohomebackup.sh -c /home/<cpaneluser>/bin/autohomebackup_site-a.conf
-0    2    *    *    *    /home/<cpaneluser>/bin/autohomebackup.sh -c /home/<cpaneluser>/bin/autohomebackup_site-b.conf
+0 1 * * * /home/<cpaneluser>/bin/autohomebackup.sh -c /home/<cpaneluser>/bin/autohomebackup_site-a.conf
+0 2 * * * /home/<cpaneluser>/bin/autohomebackup.sh -c /home/<cpaneluser>/bin/autohomebackup_site-b.conf
 ```
 
 ### Config Example Web Site A
