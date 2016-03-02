@@ -63,6 +63,7 @@ MAILADDR="admin@site-a.com"
 ```
 
 :zap: *The DROPBOX_DST_DIR must exist in the Dropbox account /home/Apps/Dropbox-App-Name/site-a*
+
 :zap: *The paths in EXCLUDE option must be without leading '/'*
 
 ### Config Example Web Site B
@@ -85,6 +86,7 @@ MAILADDR="admin@site-b.com"
 ```
 
 :zap: *The DROPBOX_DST_DIR must exist in the Dropbox account /home/Apps/Dropbox-App-Name/site-b*
+
 :zap: *The paths in EXCLUDE option must be without leading '/'*
 
 ### Notes
