@@ -35,7 +35,7 @@ Make your own config file or directly edit the config option from the script. Th
 ## Examples
 
 Examples below are assuming that you uploaded the script files and [Dropbox PHP SDK](https://github.com/dropbox/dropbox-sdk-php) to
-```/home/<cpaneluser>/bin```
+`/home/<cpaneluser>/bin`
 
 ### Cron Jobs
 ```
@@ -88,9 +88,9 @@ MAILADDR="admin@site-b.com"
 :zap: *The paths in EXCLUDE option must be without leading '/'*
 
 ### Notes
-Replace the ```<cpaneluser>``` with your cPanel server user directory name or your local Linux home dir name.
+Replace the `<cpaneluser>` with your cPanel server user directory name or your local Linux home dir name.
 
-The ```/home/<cpaneluser>/bin/.dropbox_uploader_php_auth``` from the configs is generated from [Dropbox PHP SDK - Get a Dropbox API key](https://github.com/dropbox/dropbox-sdk-php#get-a-dropbox-api-key) authentication setup.
+The `/home/<cpaneluser>/bin/.dropbox_uploader_php_auth` from the configs is generated from [Dropbox PHP SDK - Get a Dropbox API key](https://github.com/dropbox/dropbox-sdk-php#get-a-dropbox-api-key) authentication setup.
 
 The backup files that will be uploaded to your Dropbox account from the configs will be located at:
 ```
@@ -98,7 +98,7 @@ The backup files that will be uploaded to your Dropbox account from the configs 
 /home/Apps/Dropbox-App-Name/site-b/localhost-site-b-2016-03-02_08h55m.tar.gz
 ```
 
-The ```Dropbox-App-Name``` will be the one that you configured from [Dropbox PHP SDK - Get a Dropbox API key](https://github.com/dropbox/dropbox-sdk-php#get-a-dropbox-api-key) authentication setup.
+The `Dropbox-App-Name` will be the one that you configured from [Dropbox PHP SDK - Get a Dropbox API key](https://github.com/dropbox/dropbox-sdk-php#get-a-dropbox-api-key) authentication setup.
 
 ## Credits
 
