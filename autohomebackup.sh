@@ -273,6 +273,16 @@ if [ "x${GREP}" = "x" ]; then
     GREP="grep"
 fi
 
+NICE="`${WHICH} nice`"
+if [ "x${NICE}" = "x" ]; then
+    NICE="nice"
+fi
+
+IONICE="`${WHICH} ionice`"
+if [ "x${IONICE}" = "x" ]; then
+    IONICE="ionice"
+fi
+
 export LC_ALL=C
 
 PATH=/usr/local/bin:/usr/bin:/bin
@@ -292,6 +302,8 @@ BACKUPFILE=${TMPDIR}/${BACKUPFILENAME}
 DST_BACKUPFILE=${DROPBOX_DST_DIR}/${BACKUPFILENAME}
 
 TAR_OPT="czpf"
+
+NICENESS="${NICE} -n19 ${IONICE} -c2 -n7"
 
 # Create required directories
 if [ ! -e "${LOGDIR}" ]; then
@@ -354,12 +366,12 @@ fi
 if [[ ${DIRTOBACKUP} == /* ]]; then
 DIRTOBACKUP="${DIRTOBACKUP:1:${#DIRTOBACKUP}}"
 fi
-${TAR} ${TAR_OPT} "${BACKUPFILE}" ${OPT_EXCLUDE} -C / "${DIRTOBACKUP}"
+${NICENESS} ${TAR} ${TAR_OPT} "${BACKUPFILE}" ${OPT_EXCLUDE} -C / "${DIRTOBACKUP}"
 
 ${ECHO}
 ${ECHO} Uploading to Dropbox `${DU} -hs "${BACKUPFILE}"`
-#${DROPBOX_UPLOADER} -f "${DROPBOX_UPLOADER_CONFIG}" upload "${BACKUPFILE}" "${DST_BACKUPFILE}"
-${DROPBOX_UPLOADER_PHP} "${DROPBOX_UPLOADER_CONFIG_PHP}" "${BACKUPFILE}" "${DST_BACKUPFILE}"
+#${NICENESS} ${DROPBOX_UPLOADER} -f "${DROPBOX_UPLOADER_CONFIG}" upload "${BACKUPFILE}" "${DST_BACKUPFILE}"
+${NICENESS} ${DROPBOX_UPLOADER_PHP} "${DROPBOX_UPLOADER_CONFIG_PHP}" "${BACKUPFILE}" "${DST_BACKUPFILE}"
 ${ECHO}
 if [ ! -s "${LOGERR}" ]
 then
