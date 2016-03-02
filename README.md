@@ -14,8 +14,9 @@ You can make several config files and several cron jobs for them. With that you 
 
 ## Buy Me a Drink
 
-If you like the scripts here and they save you valuable time and efforts you can buy me a drink or two here:
-:coffee: :beers: [Buy Me a Drink :cocktail:](http://4ui.us/tpit) :tropical_drink: :wine_glass: :tea:
+If you like my work and it save you a valuable time and efforts please buy me a drink or two here:
+
+# [:coffee: :beers: :cocktail: :tropical_drink: :wine_glass: :tea:](http://4ui.us/tpit)
 
 
 ## Requirements
