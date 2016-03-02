@@ -45,7 +45,7 @@ Examples below are assuming that you uploaded the script files and [Dropbox PHP 
 
 ### Config Example Web Site A
 
-```/home/<cpaneluser>/bin/autohomebackup_site-a.conf```
+`/home/<cpaneluser>/bin/autohomebackup_site-a.conf`
 
 ```
 DROPBOX_UPLOADER_PHP="/home/<cpaneluser>/bin/dropbox_uploader_php.sh"
@@ -67,7 +67,7 @@ MAILADDR="admin@site-a.com"
 
 ### Config Example Web Site B
 
-```/home/<cpaneluser>/bin/autohomebackup_site-b.conf```
+`/home/<cpaneluser>/bin/autohomebackup_site-b.conf`
 
 ```
 DROPBOX_UPLOADER_PHP="/home/<cpaneluser>/bin/dropbox_uploader_php.sh"
