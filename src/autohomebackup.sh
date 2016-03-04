@@ -23,7 +23,7 @@
 
 # Default config file
 CONFIG_FILE="~/.autohomebackup.conf"
-PROGNAME=`basename $0`
+PROGNAME=`basename ${0}`
 
 VERSION=1.0.0                                          # Version Number
 CODE_LINK="https://github.com/idachev/autohomebackup"  # Link to the code
@@ -31,10 +31,10 @@ DONATE_LINK="http://4ui.us/yqso"                       # Link to donate
 DEBUG=0
 
 # Look for optional config file parameter
-while [ $# -gt 0 ]; do
-  case $1 in
+while [ ${#} -gt 0 ]; do
+  case ${1} in
     -c)
-      CONFIG_FILE="$2"
+      CONFIG_FILE="${2}"
       shift 2
       ;;
     -d)
@@ -48,14 +48,14 @@ while [ $# -gt 0 ]; do
       exit 0
       ;;
     *)
-      echo "Unknown Option \"$1\""
+      echo "Unknown Option \"${1}\""
       exit 2
       ;;
   esac
 done
 
-if [[ $DEBUG != 0 ]]; then
-    echo $VERSION
+if [[ ${DEBUG} != 0 ]]; then
+    echo ${VERSION}
     uname -a 2> /dev/null
     cat /etc/issue 2> /dev/null
     set -x
@@ -83,52 +83,58 @@ else
 
   # .dropbox_uploader_php auth token for more info how to create a auth file check
   # https://github.com/dropbox/dropbox-sdk-php
-  DROPBOX_UPLOADER_CONFIG_PHP=".dropbox_uploader_php"
+  DROPBOX_UPLOADER_CONFIG_PHP=".dropbox_uploader_php.auth"
 
-  # Destination directory on dropbox to be uploaded to, must exist
-  DROPBOX_DST_DIR="/"
+  # Destination directory on dropbox to be uploaded to
+  DROPBOX_DST_DIR="/home-backup"
 
-  # Directory to backup
-  DIRTOBACKUP="/home/user"
+  # Base directory to what the dirs in DIRS_TO_BACKUP and EXCLUDE are relative
+  BASE_DIR="/home"
 
-  # Exclude patterns array, check man tar for --esclude option
+  # Directories array to backup, at least one should be specified
+  # All directories should be relative to the BASE_DIR
+  # If you want to backup all content of BASE_DIR then use: ('.')
+  DIRS_TO_BACKUP=("user")
+
+  # Exclude patterns array, check man tar for --exclude option
   # Do not put leading "/" in the patters as tar archive do not include them
-  EXCLUDE=('home/user/tmp' 'home/user/cache')
+  # If you need to use ? and * in patterns use the single-quoted: 'dir/*'
+  EXCLUDE=('user/tmp_data' 'tmp' 'cache')
 
   # Host name to be used in files and logs
-  BACKUPHOST="localhost"
+  BACKUP_HOST="localhost"
 
   # Backup name to be used in files and logs
-  BACKUPNAME="home"
+  BACKUP_NAME="home"
 
   # Temp directory to store backup file before upload
-  TMPDIR="/home/user/tmp"
+  TMP_DIR="/home/user/tmp"
 
   # Log directory location e.g /log/autohomebackup
-  LOGDIR="/home/user/log/autohomebackup"
+  LOG_DIR="/home/user/log/autohomebackup"
 
   # Mail setup
   # What would you like to be mailed to you?
   # - log   : send only log file
   # - stdout : will simply output the log to the screen if run manually.
-  # - quiet : Only send logs if an error occurs to the MAILADDR.
-  MAILCONTENT="log"
+  # - quiet : Only send logs if an error occurs to the MAIL_ADDR.
+  MAIL_CONTENT="log"
 
   # Set the maximum allowed email size in k. (4000 = approx 5MB email [see docs])
-  MAXATTSIZE="4000"
+  MAX_ATT_SIZE="4000"
 
   # Email Address to send mail to? (user@domain.com)
-  MAILADDR="user@domain.com"
+  MAIL_ADDR="user@domain.com"
 
   # ============================================================
   # === ADVANCED OPTIONS ( Read the doc's below for details )===
   #=============================================================
 
   # Command to run before backups (uncomment to use)
-  #PREBACKUP="/etc/home-backup-pre"
+  #PRE_BACKUP="/etc/home-backup-pre"
 
   # Command run after backups (uncomment to use)
-  #POSTBACKUP="/etc/home-backup-post"
+  #POST_BACKUP="/etc/home-backup-post"
 
   ### END CFG ###
 fi
@@ -151,7 +157,7 @@ fi
 #
 # === Advanced options doc's ===
 #
-# Use PREBACKUP and POSTBACKUP to specify Per and Post backup commands
+# Use PRE_BACKUP and POST_BACKUP to specify Per and Post backup commands
 # or scripts to perform tasks either before or after the backup process.
 #
 #=====================================================================
@@ -287,6 +293,26 @@ export LC_ALL=C
 
 PATH=/usr/local/bin:/usr/bin:/bin
 
+# Helper functions
+function strip_comma()
+{
+  local l="${1}"
+  l=`echo "${l}" | sed 's/^[ ]*//g'`
+  l=`echo "${l}" | sed 's/[ ]*$//g'`
+  l=`echo "${l}" | sed 's/^,[ ]*//g'`
+  l=`echo "${l}" | sed 's/[ ]*,$//g'`
+  echo "${l}"
+}
+
+function suffix_pwd()
+{
+  local l=`strip_comma "${1}"`
+  if [[ ${l} != /* ]]; then
+    l="$PWD/${l}"
+  fi
+  echo "${l}"
+}
+
 DATE=`${DATEC} +%Y-%m-%d_%Hh%Mm` # Datestamp e.g 2002-09-21
 DOW=`${DATEC} +%A`               # Day of the week e.g. Monday
 DNOW=`${DATEC} +%u`              # Day number of the week 1 to 7 where 1 represents Monday
@@ -294,90 +320,115 @@ DOM=`${DATEC} +%d`               # Date of the Month e.g. 27
 M=`${DATEC} +%B`                 # Month e.g January
 W=`${DATEC} +%V`                 # Week Number e.g 37
 
-LOGFILE=${LOGDIR}/${BACKUPHOST}-${BACKUPNAME}-${DATE}.log       # Logfile Name
-LOGERR=${LOGDIR}/${BACKUPHOST}-${BACKUPNAME}-${DATE}_ERRORS.log # Error Logfile Name
+DROPBOX_UPLOADER_PHP=`suffix_pwd "${DROPBOX_UPLOADER_PHP}"`
+BASE_DIR=`suffix_pwd "${BASE_DIR}"`
+TMP_DIR=`suffix_pwd "${TMP_DIR}"`
+LOG_DIR=`suffix_pwd "${LOG_DIR}"`
 
-BACKUPFILENAME=${BACKUPHOST}-${BACKUPNAME}-${DATE}.tar.gz
-BACKUPFILE=${TMPDIR}/${BACKUPFILENAME}
-DST_BACKUPFILE=${DROPBOX_DST_DIR}/${BACKUPFILENAME}
+LOG_FILE=${LOG_DIR}/${BACKUP_HOST}-${BACKUP_NAME}-${DATE}.log       # Logfile Name
+LOG_ERR=${LOG_DIR}/${BACKUP_HOST}-${BACKUP_NAME}-${DATE}_ERRORS.log # Error Logfile Name
+
+BACKUP_FILE_NAME=${BACKUP_HOST}-${BACKUP_NAME}-${DATE}.tar.gz
+BACKUP_FILE=${TMP_DIR}/${BACKUP_FILE_NAME}
+DST_BACKUPFILE=${DROPBOX_DST_DIR}/${BACKUP_FILE_NAME}
 
 TAR_OPT="czpf"
 
 NICENESS="${NICE} -n19 ${IONICE} -c2 -n7"
 
 # Create required directories
-if [ ! -e "${LOGDIR}" ]; then
-  mkdir -p "${LOGDIR}"
+if [ ! -e "${LOG_DIR}" ]; then
+  mkdir -p "${LOG_DIR}"
 fi
 
 # IO redirection for logging.
-touch ${LOGFILE}
+touch ${LOG_FILE}
 exec 6>&1           # Link file descriptor #6 with stdout.
                     # Saves stdout.
-exec > ${LOGFILE}   # stdout replaced with file ${LOGFILE}.
-touch ${LOGERR}
+exec > ${LOG_FILE}   # stdout replaced with file ${LOGFILE}.
+touch ${LOG_ERR}
 exec 7>&2           # Link file descriptor #7 with stderr.
                     # Saves stderr.
-exec 2> ${LOGERR}   # stderr replaced with file ${LOGERR}.
-
+exec 2> ${LOG_ERR}   # stderr replaced with file ${LOGERR}.
 
 # Run command before we begin
-if [ "${PREBACKUP}" ]; then
+if [ "${PRE_BACKUP}" ]; then
   ${ECHO} ======================================================================
-  ${ECHO} "Prebackup command output."
+  ${ECHO} "Pre backup command output."
   ${ECHO}
-  eval ${PREBACKUP}
+  eval ${PRE_BACKUP}
   ${ECHO}
   ${ECHO} ======================================================================
   ${ECHO}
 fi
 
-
 # Hostname for LOG information
-if [ "${BACKUPHOST}" = "localhost" ]; then
+if [ "${BACKUP_HOST}" = "localhost" ]; then
   HOST=`${HOSTNAMEC}`
   if [ "${SOCKET}" ]; then
     OPT="${OPT} --socket=${SOCKET}"
   fi
 else
-  HOST=${BACKUPHOST}
+  HOST=${BACKUP_HOST}
 fi
 
 # Build tar exclude options
-OPT_EXCLUDE=""
-for i in "${EXCLUDE[@]}"
-do
-  OPT_EXCLUDE="${OPT_EXCLUDE} --exclude=${i}"
+OPT_EXCLUDE=()
+OPT_EXCLUDE_LOG=""
+for i in "${EXCLUDE[@]}"; do
+  i=`strip_comma "${i}"`
+  if [ ! "x${i}" = "x" ]; then
+    OPT_EXCLUDE+=("--exclude=${i}")
+    OPT_EXCLUDE_LOG="${OPT_EXCLUDE_LOG}\n\t${i}"
+  fi
 done
+
+# Build tar directory list to backup
+DIRS_LIST=(-C "${BASE_DIR}")
+DIRS_LIST_LOG=""
+for i in "${DIRS_TO_BACKUP[@]}"; do
+  i=`strip_comma "${i}"`
+  if [ ! "x${i}" = "x" ]; then
+    DIRS_LIST+=("${i}")
+    DIRS_LIST_LOG="${DIRS_LIST_LOG}\n\t${i}"
+  fi
+done
+
+if [ "x${DIRS_LIST_LOG}" = "x" ]; then
+  DIRS_LIST+=(".")
+  DIRS_LIST_LOG="\n\t."
+fi
 
 ${ECHO} ======================================================================
 ${ECHO} AutoHomeBackup v${VERSION}
 ${ECHO} ${CODE_LINK}
 ${ECHO}
-${ECHO} Backup of ${BACKUPNAME} at ${HOST}
+${ECHO} Backup of ${BACKUP_NAME} at ${HOST}
 ${ECHO} ======================================================================
 ${ECHO} Backup Start Time `${DATEC}`
 ${ECHO}
-${ECHO} Backup ${DIRTOBACKUP} to ${BACKUPFILE}
-if [ ! "x${OPT_EXCLUDE}" = "x" ]; then
-${ECHO} Exclude ${OPT_EXCLUDE}
+${ECHO} -e Backup to ${BACKUP_FILE}${DIRS_LIST_LOG}
+
+if [ ! "x${OPT_EXCLUDE_LOG}" = "x" ]; then
+${ECHO}
+${ECHO} -e Exclude${OPT_EXCLUDE_LOG}
 fi
 
-if [[ ${DIRTOBACKUP} == /* ]]; then
-DIRTOBACKUP="${DIRTOBACKUP:1:${#DIRTOBACKUP}}"
-fi
-${NICENESS} ${TAR} ${TAR_OPT} "${BACKUPFILE}" ${OPT_EXCLUDE} -C / "${DIRTOBACKUP}"
+OLD_PWD="${PWD}"
+cd "${BASE_DIR}"
+${NICENESS} ${TAR} ${TAR_OPT} "${BACKUP_FILE}" "${OPT_EXCLUDE[@]}" "${DIRS_LIST[@]}"
+cd "${OLD_PWD}"
 
 ${ECHO}
 ${ECHO} Uploading to Dropbox Start Time `${DATEC}`
-${ECHO} `${DU} -hs "${BACKUPFILE}"`
-#${NICENESS} ${DROPBOX_UPLOADER} -f "${DROPBOX_UPLOADER_CONFIG}" upload "${BACKUPFILE}" "${DST_BACKUPFILE}"
-${NICENESS} ${DROPBOX_UPLOADER_PHP} "${DROPBOX_UPLOADER_CONFIG_PHP}" "${BACKUPFILE}" "${DST_BACKUPFILE}"
+${ECHO} `${DU} -hs "${BACKUP_FILE}"`
+#${NICENESS} ${DROPBOX_UPLOADER} -f "${DROPBOX_UPLOADER_CONFIG}" upload "${BACKUP_FILE}" "${DST_BACKUPFILE}"
+${NICENESS} ${DROPBOX_UPLOADER_PHP} "${DROPBOX_UPLOADER_CONFIG_PHP}" "${BACKUP_FILE}" "${DST_BACKUPFILE}"
 ${ECHO}
-if [ ! -s "${LOGERR}" ]
+if [ ! -s "${LOG_ERR}" ]
 then
-  ${ECHO} Remove ${BACKUPFILE}
-  eval ${RM} -f "${BACKUPFILE}"
+  ${ECHO} Remove ${BACKUP_FILE}
+  eval ${RM} -f "${BACKUP_FILE}"
   ${ECHO}
 fi
 ${ECHO} Backup End Time `${DATEC}`
@@ -387,12 +438,12 @@ ${ECHO} ${DONATE_LINK}
 ${ECHO} ======================================================================
 
 # Run command when we're done
-if [ "${POSTBACKUP}" ]
+if [ "${POST_BACKUP}" ]
   then
   ${ECHO} ======================================================================
-  ${ECHO} "Postbackup command output."
+  ${ECHO} "Post backup command output."
   ${ECHO}
-  eval ${POSTBACKUP}
+  eval ${POST_BACKUP}
   ${ECHO}
   ${ECHO} ======================================================================
 fi
@@ -401,35 +452,35 @@ fi
 exec 1>&6 6>&-      # Restore stdout and close file descriptor #6.
 exec 2>&7 7>&-      # Restore stdout and close file descriptor #7.
 
-if [ "${MAILCONTENT}" = "log" ]
+if [ "${MAIL_CONTENT}" = "log" ]
 then
-  ${CAT} "${LOGFILE}" | mail -s "Backup Log for ${HOST} - ${DATE}" ${MAILADDR}
-  if [ -s "${LOGERR}" ]
+  ${CAT} "${LOG_FILE}" | mail -s "Backup Log for ${HOST} - ${DATE}" ${MAIL_ADDR}
+  if [ -s "${LOG_ERR}" ]
     then
-      ${CAT} "${LOGERR}" | mail -s "ERRORS REPORTED: Backup error Log for ${HOST} - ${DATE}" ${MAILADDR}
+      ${CAT} "${LOG_ERR}" | mail -s "ERRORS REPORTED: Backup error Log for ${HOST} - ${DATE}" ${MAIL_ADDR}
   fi
-elif [ "${MAILCONTENT}" = "quiet" ]
+elif [ "${MAIL_CONTENT}" = "quiet" ]
 then
-  if [ -s "${LOGERR}" ]
+  if [ -s "${LOG_ERR}" ]
     then
-      ${CAT} "${LOGERR}" | mail -s "ERRORS REPORTED: Backup error Log for ${HOST} - ${DATE}" ${MAILADDR}
-      ${CAT} "${LOGFILE}" | mail -s "Backup Log for ${HOST} - ${DATE}" ${MAILADDR}
+      ${CAT} "${LOG_ERR}" | mail -s "ERRORS REPORTED: Backup error Log for ${HOST} - ${DATE}" ${MAIL_ADDR}
+      ${CAT} "${LOG_FILE}" | mail -s "Backup Log for ${HOST} - ${DATE}" ${MAIL_ADDR}
   fi
 else
-  if [ -s "${LOGERR}" ]
+  if [ -s "${LOG_ERR}" ]
     then
-      ${CAT} "${LOGFILE}"
+      ${CAT} "${LOG_FILE}"
       ${ECHO}
       ${ECHO} "###### WARNING ######"
       ${ECHO} "Errors reported during AutoHomeBackup execution.. Backup failed"
       ${ECHO} "Error log below.."
-      ${CAT} "${LOGERR}"
+      ${CAT} "${LOG_ERR}"
   else
-    ${CAT} "${LOGFILE}"
+    ${CAT} "${LOG_FILE}"
   fi
 fi
 
-if [ -s "${LOGERR}" ]
+if [ -s "${LOG_ERR}" ]
   then
     STATUS=1
   else
