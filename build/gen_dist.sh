@@ -22,7 +22,23 @@
 BASEDIR=$(readlink -f $0)
 BASEDIR=$(dirname ${BASEDIR})
 
-DROPBOX_PHP_SDK=https://www.dropbox.com/developers/downloads/sdks/core/php/v1.1.5.zip
+DROPBOX_PHP_SDK=https://codeload.github.com/dropbox/dropbox-sdk-php/zip/v1.1.5
+
+echo -e "Downloading Dropbox PHP SDK\n${DROPBOX_PHP_SDK}"
+TMP_DIR=`mktemp -d`
+DST_ZIP="${TMP_DIR}/phpsdk.zip"
+curl -s -S -o "${DST_ZIP}" ${DROPBOX_PHP_SDK}
+if [ $? -ne 0 ];then
+  echo "\nDropbox PHP SDK download failed!"
+  exit 1
+fi
+
+TMP_DIR_ZIP=`mktemp -d`
+unzip -qq "${DST_ZIP}" -d "${TMP_DIR_ZIP}"
+if [ $? -ne 0 ];then
+  echo -e "\nFailed to extract\n\t${DST_ZIP}\nto\n\t${TMP_DIR_ZIP}"
+  exit 1
+fi
 
 GIT_HASH=$(git rev-parse --short HEAD)
 
@@ -36,6 +52,11 @@ BUILD_DIR="${DIST_DIR}/${BUILD_NAME}"
 mkdir -p ${BUILD_DIR}
 
 cp -a ${BASEDIR}/../src/*sh ${BUILD_DIR}
+cp -a ${BASEDIR}/../LICENSE ${BUILD_DIR}
+cp -a ${BASEDIR}/../README.md ${BUILD_DIR}
+cp -a ${TMP_DIR_ZIP}/dropbox-sdk-php-1.1.5/lib ${BUILD_DIR}
+cp -a ${TMP_DIR_ZIP}/dropbox-sdk-php-1.1.5/examples ${BUILD_DIR}
+cp -a ${TMP_DIR_ZIP}/dropbox-sdk-php-1.1.5/License.txt ${BUILD_DIR}/dropbox-sdk-php-1.1.5-License.txt
 
 sed -i "s/#BUILD_VERSION#/${BUILD_VERSION}/g" ${BUILD_DIR}/autohomebackup.sh
 sed -i "s/#BUILD_VERSION#/${BUILD_VERSION}/g" ${BUILD_DIR}/dropbox_uploader_php.sh
@@ -44,10 +65,9 @@ sed -i "s/#GIT_HASH#/${GIT_HASH}/g" ${BUILD_DIR}/dropbox_uploader_php.sh
 sed -i "s/#BUILD_DATE#/${BUILD_DATE}/g" ${BUILD_DIR}/autohomebackup.sh
 sed -i "s/#BUILD_DATE#/${BUILD_DATE}/g" ${BUILD_DIR}/dropbox_uploader_php.sh
 
-cd ${DIST_DIR}
-tar czf "${DIST_DIR}/${BUILD_NAME}.tar.gz" ${BUILD_NAME}
-rm latest 2> /dev/null
-ln -s ./${BUILD_NAME} latest
-cd ${BASEDIR}
+BUILD_FILE=${DIST_DIR}/${BUILD_NAME}.tar.gz
+tar czf "${BUILD_FILE}" -C ${DIST_DIR} ${BUILD_NAME}
+rm ${DIST_DIR}/latest 2> /dev/null
+ln -s ${BUILD_NAME} ${DIST_DIR}/latest
 
-echo -e "Build generated\n${DIST_DIR}/${BUILD_NAME}"
+echo -e "\nBuild generated:\n\t${BUILD_FILE}\n\t${DIST_DIR}/${BUILD_NAME}"
