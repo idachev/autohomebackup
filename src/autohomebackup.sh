@@ -1,7 +1,8 @@
 #!/bin/bash
 #
 # Auto Home Backup Script
-# VER. 1.0.0 - https://github.com/idachev/autohomebackup
+# v#BUILD_VERSION# #BUILD_DATE# #GIT_HASH#
+# https://github.com/idachev/autohomebackup
 # Copyright (c) 2016 Ivan Dachev
 #
 # This program is free software; you can redistribute it and/or modify
@@ -25,7 +26,7 @@
 CONFIG_FILE="~/.autohomebackup.conf"
 PROGNAME=`basename ${0}`
 
-VERSION=1.0.0                                          # Version Number
+VERSION="v#BUILD_VERSION# #BUILD_DATE# #GIT_HASH#"     # Version
 CODE_LINK="https://github.com/idachev/autohomebackup"  # Link to the code
 DONATE_LINK="http://4ui.us/yqso"                       # Link to donate
 DEBUG=0
@@ -184,6 +185,8 @@ fi
 # Change Log
 #=====================================================================
 #
+# VER 1.0.1 - (2016-03-05)
+#     - Introduced build releases that include Dropbox PHP SDK
 # VER 1.0.0 - (2016-03-02)
 #     - Initial
 #
@@ -400,7 +403,8 @@ if [ "x${DIRS_LIST_LOG}" = "x" ]; then
 fi
 
 ${ECHO} ======================================================================
-${ECHO} AutoHomeBackup v${VERSION}
+${ECHO} Auto Home Backup Script
+${ECHO} ${VERSION}
 ${ECHO} ${CODE_LINK}
 ${ECHO}
 ${ECHO} Backup of ${BACKUP_NAME} at ${HOST}

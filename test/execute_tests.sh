@@ -1,8 +1,5 @@
 #!/bin/bash
 #
-# Auto Home Backup Dropbox Uploader PHP Script
-# v#BUILD_VERSION# #BUILD_DATE# #GIT_HASH#
-# https://github.com/idachev/autohomebackup
 # Copyright (c) 2016 Ivan Dachev
 #
 # This program is free software; you can redistribute it and/or modify
@@ -19,32 +16,22 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
-# It uses the https://github.com/dropbox/dropbox-sdk-php
-#
 #=====================================================================
 #set -x
 
-WHICH="`which which`"
-if [ "x${WHICH}" = "x" ]; then
-    WHICH="which"
-fi
+BASEDIR=$(readlink -f $0)
+BASEDIR=$(dirname ${BASEDIR})
+cd ${BASEDIR}/..
 
-PHP="`${WHICH} php`"
-if [ "x${PHP}" = "x" ]; then
-    PHP="php"
-fi
+function execute_test()
+{
+./src/autohomebackup.sh -c "./${1}"
+./test/test_cmp.sh "./tmp/test.tar.gz" "./${2}"
+}
 
-READLINK="`${WHICH} readlink`"
-if [ "x${READLINK}" = "x" ]; then
-    READLINK="readlink"
-fi
-
-DIRNAME="`${WHICH} dirname`"
-if [ "x${DIRNAME}" = "x" ]; then
-    DIRNAME="dirname"
-fi
-
-BASEDIR=$(${READLINK} -f $0)
-BASEDIR=$(${DIRNAME} ${BASEDIR})
-
-php "${BASEDIR}/examples/upload-file.php" "$1" "$2" "$3"
+execute_test test/test_1.conf test/expected_test_1
+execute_test test/test_2.conf test/expected_test_2
+execute_test test/test_3.conf test/expected_test_3
+execute_test test/test_4.conf test/expected_test_4
+execute_test test/test_5.conf test/expected_test_5
+execute_test test/test_6.conf test/expected_test_6
