@@ -22,9 +22,19 @@
 #=====================================================================
 #set -x
 
+#=====================================================================
+# START of init section
+#
+# Should not need to be modified
+#
+#=====================================================================
+
+SCRIPT_LOC=$(readlink -f $0)
+SCRIPT_NAME=$(basename ${SCRIPT_LOC})
+SCRIPT_DIR=$(dirname ${SCRIPT_LOC})
+
 # Default config file
-CONFIG_FILE="~/.autohomebackup.conf"
-PROGNAME=`basename ${0}`
+CONFIG_FILE="${SCRIPT_DIR}/autohomebackup.conf"
 
 VERSION="v#BUILD_VERSION# #BUILD_DATE# #GIT_HASH#"     # Version
 CODE_LINK="https://github.com/idachev/autohomebackup"  # Link to the code
@@ -43,7 +53,7 @@ while [ ${#} -gt 0 ]; do
       shift 1
       ;;
     --help)
-      echo "Usage: ${PROGNAME} [-d] [-c CONFIG_FILE]"
+      echo "Usage: ${SCRIPT_NAME} [-d] [-c CONFIG_FILE]"
       echo -e "\t-d: Start dump debug info and messages."
       echo -e "\t-c CONFIG_FILE: Config file to load.\n\t\tIf ommit will use values from ${CONFIG_FILE}"
       exit 0
@@ -63,28 +73,56 @@ if [[ ${DEBUG} != 0 ]]; then
 fi
 
 #=====================================================================
-# Set the following variables to your system needs
-# (Detailed instructions below variables)
+# END of init section
+#=====================================================================
+
+
+#=====================================================================
+# START of default optional config variables
+#=====================================================================
+
+# dropbox_uploader_php.sh script location provided along with this script
+DROPBOX_UPLOADER_PHP="${SCRIPT_DIR}/dropbox_uploader_php.sh"
+
+# .dropbox_uploader_php auth token for more info how to create an
+# auth file check: https://github.com/dropbox/dropbox-sdk-php
+DROPBOX_UPLOADER_CONFIG_PHP="${SCRIPT_DIR}/.dropbox_uploader_php.auth"
+
+# Mail setup
+# What would you like to be mailed to you?
+# - log   : send only log file
+# - stdout : will simply output the log to the screen if run manually.
+# - quiet : Only send logs if an error occurs to the MAIL_ADDR.
+MAIL_CONTENT="log"
+
+# Set the maximum allowed email size in k. (4000 = approx 5MB email)
+MAX_ATT_SIZE="4000"
+
+#=====================================================================
+# END of default optional config variables
+#=====================================================================
+
+
+#=====================================================================
+# START of required config variables
 #=====================================================================
 
 if [ -r ${CONFIG_FILE} ]; then
   # Read the config file if it's existing and readable
   source ${CONFIG_FILE}
 else
-  # do inline-config otherwise
-  # To create a config file just copy the code between
-  # "### START CFG ###" and "### END CFG ###" to .autohomebackup.conf
+  # Do inline-config otherwise
+  # Set the following variables to your system needs
+  #
+  # To create a config file just copy the code to autohomebackup.conf between
+  # "### START OF REQUIRED CONFIG ###" and "### END OF REQUIRED CONFIG ###"
+  #
+  # You can include any of the optional variables if you need to modify them.
+  #
   # After that you're able to upgrade this script
   # (copy a new version to its location) without the need for editing it.
 
-  ### START CFG ###
-
-  # dropbox_uploader_php.sh script location provided along with this script
-  DROPBOX_UPLOADER_PHP="dropbox_uploader_php.sh"
-
-  # .dropbox_uploader_php auth token for more info how to create a auth file check
-  # https://github.com/dropbox/dropbox-sdk-php
-  DROPBOX_UPLOADER_CONFIG_PHP=".dropbox_uploader_php.auth"
+  ### START OF REQUIRED CONFIG ###
 
   # Destination directory on dropbox to be uploaded to
   DROPBOX_DST_DIR="/home-backup"
@@ -108,67 +146,39 @@ else
   # Backup name to be used in files and logs
   BACKUP_NAME="home"
 
-  # Temp directory to store backup file before upload
-  TMP_DIR="/home/user/tmp"
-
-  # Log directory location e.g /log/autohomebackup
-  LOG_DIR="/home/user/log/autohomebackup"
-
-  # Mail setup
-  # What would you like to be mailed to you?
-  # - log   : send only log file
-  # - stdout : will simply output the log to the screen if run manually.
-  # - quiet : Only send logs if an error occurs to the MAIL_ADDR.
-  MAIL_CONTENT="log"
-
-  # Set the maximum allowed email size in k. (4000 = approx 5MB email [see docs])
-  MAX_ATT_SIZE="4000"
-
   # Email Address to send mail to? (user@domain.com)
   MAIL_ADDR="user@domain.com"
 
-  # ============================================================
-  # === ADVANCED OPTIONS ( Read the doc's below for details )===
-  #=============================================================
+  # Temp directory to store backup file before upload
+  TMP_DIR="/home/user/tmp"
+
+  # Log directory location
+  LOG_DIR="/home/user/logs/autohomebackup"
 
   # Command to run before backups (uncomment to use)
   #PRE_BACKUP="/etc/home-backup-pre"
 
-  # Command run after backups (uncomment to use)
+  # Command to run after backups (uncomment to use)
   #POST_BACKUP="/etc/home-backup-post"
 
-  ### END CFG ###
+  ### END OF REQUIRED CONFIG ###
 fi
 
 #=====================================================================
-# Options documentation
+# END of required config variables
 #=====================================================================
-# TODO
-#
-# Finally copy autohomebackup.sh to anywhere on your server and make sure
-# to set executable permission. You can also copy the script to
-# /etc/cron.daily to have it execute automatically every night or simply
-# place a symlink in /etc/cron.daily to the file if you wish to keep it
-# somewhere else.
-#
-# NOTE:On Debian copy the file with no extension for it to be run
-# by cron e.g just name the file "autohomebackup"
-#
-# That's it..
-#
-# === Advanced options doc's ===
-#
-# Use PRE_BACKUP and POST_BACKUP to specify Per and Post backup commands
-# or scripts to perform tasks either before or after the backup process.
-#
+
+
 #=====================================================================
-# Please Note!!
+# Please Notes
 #=====================================================================
 #
 # I take no responsibility for any data loss or corruption when using
-# this script..
+# this script.
+#
 # This script will not help in the event of a hard drive crash. If a
-# copy of the backup has not be stored offline or on another PC..
+# copy of the backup has not be stored offline or on another PC.
+#
 # You should copy your backups offline regularly for best protection.
 #
 # Happy backing up...
@@ -179,7 +189,7 @@ fi
 # Uncompress the backup file:
 # tar xzf file.tar.gz
 #
-# Lets hope you never have to use this.. :)
+# Lets hope you never have to use this. :)
 #
 #=====================================================================
 # Change Log
@@ -194,7 +204,7 @@ fi
 #=====================================================================
 #=====================================================================
 #
-# Should not need to be modified from here down!!
+# Should not need to be modified from here down!!!
 #
 #=====================================================================
 #=====================================================================
