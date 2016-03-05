@@ -22,7 +22,8 @@
 BASEDIR=$(readlink -f $0)
 BASEDIR=$(dirname ${BASEDIR})
 
-DROPBOX_PHP_SDK=https://codeload.github.com/dropbox/dropbox-sdk-php/zip/v1.1.5
+DROPBOX_PHP_SDK_VERSION=`cat ${BASEDIR}/dropbox-php-sdk-version.txt`
+DROPBOX_PHP_SDK="https://codeload.github.com/dropbox/dropbox-sdk-php/zip/v${DROPBOX_PHP_SDK_VERSION}"
 
 echo -e "Downloading Dropbox PHP SDK\n${DROPBOX_PHP_SDK}"
 TMP_DIR=`mktemp -d`
@@ -54,9 +55,9 @@ mkdir -p ${BUILD_DIR}
 cp -a ${BASEDIR}/../src/*sh ${BUILD_DIR}
 cp -a ${BASEDIR}/../LICENSE ${BUILD_DIR}
 cp -a ${BASEDIR}/../README.md ${BUILD_DIR}
-cp -a ${TMP_DIR_ZIP}/dropbox-sdk-php-1.1.5/lib ${BUILD_DIR}
-cp -a ${TMP_DIR_ZIP}/dropbox-sdk-php-1.1.5/examples ${BUILD_DIR}
-cp -a ${TMP_DIR_ZIP}/dropbox-sdk-php-1.1.5/License.txt ${BUILD_DIR}/dropbox-sdk-php-1.1.5-License.txt
+cp -a "${TMP_DIR_ZIP}/dropbox-sdk-php-${DROPBOX_PHP_SDK_VERSION}/lib" ${BUILD_DIR}
+cp -a "${TMP_DIR_ZIP}/dropbox-sdk-php-${DROPBOX_PHP_SDK_VERSION}/examples" ${BUILD_DIR}
+cp -a "${TMP_DIR_ZIP}/dropbox-sdk-php-${DROPBOX_PHP_SDK_VERSION}/License.txt" "${BUILD_DIR}/dropbox-sdk-php-${DROPBOX_PHP_SDK_VERSION}-License.txt"
 
 sed -i "s/#BUILD_VERSION#/${BUILD_VERSION}/g" ${BUILD_DIR}/autohomebackup.sh
 sed -i "s/#BUILD_VERSION#/${BUILD_VERSION}/g" ${BUILD_DIR}/dropbox_uploader_php.sh
