@@ -1,4 +1,4 @@
-# Auto Home Backup v1.0.0
+# Auto Home Backup v1.0.1
 
 Auto Home Backup script to Dropbox using bash and [Dropbox PHP SDK](https://github.com/dropbox/dropbox-sdk-php). Ideal for full web sites backup from cPanel.
 
@@ -21,23 +21,81 @@ If you like my work and it save you a valuable time and effort, please buy me a 
 
 ## Requirements
 
-Download the latest [Dropbox PHP SDK](https://github.com/dropbox/dropbox-sdk-php)
+In order to use the script you need to do the following:
+1. Have a Dropbox account
+2. Create a Dropbox App
+3. Make a Dropbox PHP SDK authentication file - steps are listed here [Dropbox PHP SDK - Get a Dropbox API key](https://github.com/dropbox/dropbox-sdk-php#get-a-dropbox-api-key).
 
-Follow the steps form [Dropbox PHP SDK - Get a Dropbox API key](https://github.com/dropbox/dropbox-sdk-php#get-a-dropbox-api-key) to make the auth config file. This is done only once and you should do it at your local Linux box.
+These steps are done only once and you should do them from your local Linux box.
 
 It is preferred to use a Dropbox App authentication, check the [Dropbox PHP SDK - Get a Dropbox API key](https://github.com/dropbox/dropbox-sdk-php#get-a-dropbox-api-key) documentation.
 
-Place the SDK files on same level as the scripts:
-```
-examples/                ;comes from Dropbpx PHP SDK
-lib/                     ;comes from Dropbpx PHP SDK
-autohomebackup.sh
-dropbox_uploader_php.sh
-```
-
 ## Setup
 
-Make your own config file or directly edit the config option from the script. The script contains the config option description with simple example values.
+Make your own config file or directly edit the config option from the script.
+
+Check examples below.
+
+## Config options
+
+### DROPBOX_UPLOADER_PHP="dropbox_uploader_php.sh"
+`dropbox_uploader_php.sh` script location provided along with this script
+  
+
+### DROPBOX_UPLOADER_CONFIG_PHP=".dropbox_uploader_php.auth"
+`.dropbox_uploader_php.auth` token for more info how to create a auth file check [Dropbox PHP SDK - Get a Dropbox API key](https://github.com/dropbox/dropbox-sdk-php#get-a-dropbox-api-key) documentation
+  
+
+### DROPBOX_DST_DIR="/home-backup"
+Destination directory on dropbox to be uploaded to. It will be created on first upload under your Dropbox App directory.
+  
+
+### BASE_DIR="/home"
+Base directory to what the dirs in `DIRS_TO_BACKUP` and `EXCLUDE` are relative.
+
+### DIRS_TO_BACKUP=("user")
+Directories array to backup, at least one should be specified.
+
+All directories should be relative to the `BASE_DIR`.
+
+If you want to backup all content of `BASE_DIR` then use: `('.')`
+
+### EXCLUDE=('user/tmp_data' 'tmp' 'cache')
+Exclude patterns array, check [man tar]() for `--exclude` option.
+
+Do not put leading `"/"` in the patters as tar archive do not include them.
+
+If you need to use `?` and `*` in patterns use the single-quoted: `'dir/*'`
+
+### BACKUP_HOST="localhost"
+Host name to be used in files and logs.
+
+### BACKUP_NAME="home"
+Backup name to be used in files and logs.
+
+### TMP_DIR="/home/user/tmp"
+Temp directory to store backup file before upload.
+
+### LOG_DIR="/home/user/log/autohomebackup"
+Log directory location.
+
+### MAIL_CONTENT="log"
+Mail setup, what would you like to be mailed to you?
+ `log` - send only log file.
+ `stdout` - will simply output the log to the screen if run manually.
+ `quiet` - only send logs if an error occurs to the MAIL_ADDR.
+
+### MAX_ATT_SIZE="4000"
+Set the maximum allowed email size in k. (4000 = approx 5MB email).
+
+### MAIL_ADDR="user@domain.com"
+Email Address to send mail to?
+
+### PRE_BACKUP="/etc/home-backup-pre"
+Command to run before backups.
+
+### POST_BACKUP="/etc/home-backup-post"
+Command to run after backups.
 
 ## Examples
 
@@ -56,22 +114,23 @@ Examples below are assuming that you uploaded the script files and [Dropbox PHP 
 
 ```
 DROPBOX_UPLOADER_PHP="/home/<cpaneluser>/bin/dropbox_uploader_php.sh"
-DROPBOX_UPLOADER_CONFIG_PHP="/home/<cpaneluser>/bin/.dropbox_uploader_php_auth"
+DROPBOX_UPLOADER_CONFIG_PHP="/home/<cpaneluser>/bin/.dropbox_uploader_php.auth"
 DROPBOX_DST_DIR="/site-a"
-DIRTOBACKUP="/home/<cpaneluser>/public_html/site-a"
-EXCLUDE=('home/<cpaneluser>/public_html/site-a/cache' 'home/<cpaneluser>/public_html/site-a/temp')
-BACKUPHOST="localhost"
-BACKUPNAME="site-a"
-TMPDIR="/home/<cpaneluser>/tmp"
-LOGDIR="/home/<cpaneluser>/logs/autohomebackup"
-MAILCONTENT="log"
-MAXATTSIZE="4000"
-MAILADDR="admin@site-a.com"
+BASE_DIR="/home/<cpaneluser>/public_html"
+DIRS_TO_BACKUP=("site-a")
+EXCLUDE=('cache' 'tmp' 'temp' 'site-a/custom-dir')
+BACKUP_HOST="localhost"
+BACKUP_NAME="site-a"
+TMP_DIR="/home/<cpaneluser>/tmp"
+LOG_DIR="/home/<cpaneluser>/logs/autohomebackup"
+MAIL_CONTENT="log"
+MAX_ATT_SIZE="4000"
+MAIL_ADDR="admin@site-a.com"
 ```
 
-:zap: *The DROPBOX_DST_DIR must exist in the Dropbox account /home/Apps/Dropbox-App-Name/site-a*
+:zap: *The DROPBOX_DST_DIR will be created in the Dropbox account /home/Apps/Dropbox-App-Name/site-a*
 
-:zap: *The paths in EXCLUDE option must be without leading '/'*
+:zap: *The paths in EXCLUDE option must be relative to BASE_DIR*
 
 ### Config Example Web Site B
 
@@ -79,27 +138,28 @@ MAILADDR="admin@site-a.com"
 
 ```
 DROPBOX_UPLOADER_PHP="/home/<cpaneluser>/bin/dropbox_uploader_php.sh"
-DROPBOX_UPLOADER_CONFIG_PHP="/home/<cpaneluser>/bin/.dropbox_uploader_php_auth"
+DROPBOX_UPLOADER_CONFIG_PHP="/home/<cpaneluser>/bin/.dropbox_uploader_php.auth"
 DROPBOX_DST_DIR="/site-b"
-DIRTOBACKUP="/home/<cpaneluser>/public_html/site-b"
-EXCLUDE=('home/<cpaneluser>/public_html/site-b/cache')
-BACKUPHOST="localhost"
-BACKUPNAME="site-b"
-TMPDIR="/home/<cpaneluser>/tmp"
-LOGDIR="/home/<cpaneluser>/logs/autohomebackup"
-MAILCONTENT="log"
-MAXATTSIZE="4000"
-MAILADDR="admin@site-b.com"
+BASE_DIR="/home/<cpaneluser>/public_html"
+DIRS_TO_BACKUP=("site-b")
+EXCLUDE=('cache' 'tmp' 'temp' 'site-b/custom-dir')
+BACKUP_HOST="localhost"
+BACKUP_NAME="site-b"
+TMP_DIR="/home/<cpaneluser>/tmp"
+LOG_DIR="/home/<cpaneluser>/logs/autohomebackup"
+MAIL_CONTENT="log"
+MAX_ATT_SIZE="4000"
+MAIL_ADDR="admin@site-a.com"
 ```
 
-:zap: *The DROPBOX_DST_DIR must exist in the Dropbox account /home/Apps/Dropbox-App-Name/site-b*
+:zap: *The DROPBOX_DST_DIR will be created in the Dropbox account /home/Apps/Dropbox-App-Name/site-b*
 
-:zap: *The paths in EXCLUDE option must be without leading '/'*
+:zap: *The paths in EXCLUDE option must be relative to BASE_DIR*
 
 ### Notes
 Replace the `<cpaneluser>` with your cPanel server user directory name or your local Linux home dir name.
 
-The `/home/<cpaneluser>/bin/.dropbox_uploader_php_auth` from the configs is generated from [Dropbox PHP SDK - Get a Dropbox API key](https://github.com/dropbox/dropbox-sdk-php#get-a-dropbox-api-key) authentication setup.
+The `/home/<cpaneluser>/bin/.dropbox_uploader_php.auth` from the configs is generated from [Dropbox PHP SDK - Get a Dropbox API key](https://github.com/dropbox/dropbox-sdk-php#get-a-dropbox-api-key) authentication setup.
 
 The backup files that will be uploaded to your Dropbox account from the configs will be located at:
 ```
