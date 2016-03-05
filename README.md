@@ -61,7 +61,7 @@ All directories should be relative to the `BASE_DIR`.
 If you want to backup all content of `BASE_DIR` then use: `('.')`
 
 ### EXCLUDE=('user/tmp_data' 'tmp' 'cache')
-Exclude patterns array, check [man tar]() for `--exclude` option.
+Exclude patterns array, check [man tar](http://www.gnu.org/software/tar/manual/tar.html) for `--exclude` option.
 
 Do not put leading `"/"` in the patters as tar archive do not include them.
 
