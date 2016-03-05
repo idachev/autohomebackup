@@ -195,6 +195,9 @@ fi
 # Change Log
 #=====================================================================
 #
+# VER 1.0.2 - (2016-03-05)
+#     - Fixed to use Dropbox PHP SDK 1.1.6
+#     - Separate config options to required and default ones
 # VER 1.0.1 - (2016-03-05)
 #     - Introduced build releases that include Dropbox PHP SDK
 # VER 1.0.0 - (2016-03-02)
