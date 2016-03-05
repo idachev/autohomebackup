@@ -27,7 +27,7 @@ If you like my work and it save you a valuable time and effort, please buy me a 
 
 In order to use the script you need to do the following:
  1. Have a Dropbox account
- 2. Create a Dropbox App
+ 2. Create a Dropbox App Folder - you can create such application folder from your Dropbox account here [Dropbox Apps](https://www.dropbox.com/developers/apps). 
  3. Make a Dropbox PHP SDK authentication file - steps are listed here [Dropbox PHP SDK - Get a Dropbox API key](https://github.com/dropbox/dropbox-sdk-php#get-a-dropbox-api-key).
 
 These steps are done only once and you should do them from your local Linux box.
@@ -45,11 +45,11 @@ Check examples below.
 ```
 DROPBOX_DST_DIR="/home-backup"
 ```
-Destination directory on dropbox to be uploaded to. It will be created on first upload under your Dropbox App directory.
+Destination directory on Dropbox to be uploaded to. It will be created on first upload under your Dropbox App directory.
  
 ```
 BASE_DIR="/home
-````
+```
 Base directory to what the dirs in `DIRS_TO_BACKUP` and `EXCLUDE` are relative.
 
 ```
@@ -84,12 +84,12 @@ Temp directory to store backup file before upload.
 ```
 LOG_DIR="/home/user/log/autohomebackup"
 ```
-Log directory location.
+Directory location where the script will store its logs.
 
 ```
 MAIL_ADDR="user@domain.com"
 ```
-Email Address to send mail to.
+Email address to send mail to.
 
 
 ## Default Config Options
@@ -130,26 +130,35 @@ Command to run after backups.
 
 ## Examples
 
-Examples below are assuming that you uploaded the script files and [Dropbox PHP SDK](https://github.com/dropbox/dropbox-sdk-php) to
+Examples below are assuming that you uploaded the script release files to
 `/home/<cpaneluser>/bin`
 
 Also the script will look by default for `/home/<cpaneluser>/bin/.dropbox_uploader_php.auth`.
 This file will be generated from [Dropbox PHP SDK - Get a Dropbox API key](https://github.com/dropbox/dropbox-sdk-php#get-a-dropbox-api-key) authentication setup.
 
 ### Cron Jobs
+
+Flowing are jobs to backup of `Web Site A` and `Web Site B` once a day.
+The `Server System` backup is done once a month at its 1 day.
+
 ```
 0 1 * * * /home/<cpaneluser>/bin/autohomebackup.sh -c /home/<cpaneluser>/bin/autohomebackup_site-a.conf
 0 2 * * * /home/<cpaneluser>/bin/autohomebackup.sh -c /home/<cpaneluser>/bin/autohomebackup_site-b.conf
+0 3 1 * * /home/<cpaneluser>/bin/autohomebackup.sh -c /home/<cpaneluser>/bin/autohomebackup_server-system.conf
 ```
 
-### Config Example Web Site A
+### Config Example Backup Web Site A
+
+It will backup all of the files under `/home/<cpaneluser>/public_html/site-a` and `/home/<cpaneluser>/mysql-backups/site-a`.
+Excluding all cache and temp directories at any level in directories to backup.
+Also will exclude and a custom directory `site-a/custom-dir` that we do not want to backup for this site.  
 
 `/home/<cpaneluser>/bin/autohomebackup_site-a.conf`
 
 ```
 DROPBOX_DST_DIR="/site-a"
-BASE_DIR="/home/<cpaneluser>/public_html"
-DIRS_TO_BACKUP=("site-a")
+BASE_DIR="/home/<cpaneluser>"
+DIRS_TO_BACKUP=("public_html/site-a" "mysql-backups/site-a")
 EXCLUDE=('cache' 'tmp' 'temp' 'site-a/custom-dir')
 BACKUP_HOST="localhost"
 BACKUP_NAME="site-a"
@@ -162,14 +171,18 @@ MAIL_ADDR="admin@site-a.com"
 
 :zap: *The paths in EXCLUDE option must be relative to 'BASE_DIR' or 'BASE_DIR/DIRS_TO_BACKUP'*
 
-### Config Example Web Site B
+### Config Example Backup Web Site B
+
+It will backup all of the files under `/home/<cpaneluser>/public_html/site-b` and `/home/<cpaneluser>/mysql-backups/site-b`.
+Excluding all cache and temp directories at any level in directories to backup.
+Also will exclude and a custom directory `site-b/custom-dir` that we do not want to backup for this site.  
 
 `/home/<cpaneluser>/bin/autohomebackup_site-b.conf`
 
 ```
 DROPBOX_DST_DIR="/site-b"
-BASE_DIR="/home/<cpaneluser>/public_html"
-DIRS_TO_BACKUP=("site-b")
+BASE_DIR="/home/<cpaneluser>"
+DIRS_TO_BACKUP=("public_html/site-b" "mysql-backups/site-b")
 EXCLUDE=('cache' 'tmp' 'temp' 'site-b/custom-dir')
 BACKUP_HOST="localhost"
 BACKUP_NAME="site-b"
@@ -182,13 +195,39 @@ MAIL_ADDR="admin@site-a.com"
 
 :zap: *The paths in EXCLUDE option must be relative to 'BASE_DIR' or 'BASE_DIR/DIRS_TO_BACKUP'*
 
+### Config Example Backup Web Server System Data
+
+Useful to backup all of your server system logs and configs without your web site `public_html` folder.
+
+`/home/<cpaneluser>/bin/autohomebackup_server-system.conf`
+
+```
+DROPBOX_DST_DIR="/server-system"
+BASE_DIR="/home/<cpaneluser>"
+DIRS_TO_BACKUP=('.')
+EXCLUDE=('cache' 'tmp' 'public_html')
+BACKUP_HOST="localhost"
+BACKUP_NAME="server-system"
+TMP_DIR="/home/<cpaneluser>/tmp"
+LOG_DIR="/home/<cpaneluser>/logs/autohomebackup"
+MAIL_ADDR="admin@site-a.com"
+```
+
+:zap: *The 'DROPBOX_DST_DIR' will be created in the Dropbox account '/home/Apps/Dropbox-App-Name/server-system'*
+
+:zap: *The paths in EXCLUDE option must be relative to 'BASE_DIR' or 'BASE_DIR/DIRS_TO_BACKUP'*
+
 ### Notes
 Replace the `<cpaneluser>` with your cPanel server user directory name or your local Linux home dir name.
+
+The `/home/<cpaneluser>/mysql-backups` from examples above is folder where [Auto MySQL Backup](https://sourceforge.net/projects/automysqlbackup/)
+is setup to regularly backup MySQL database files. Its cron job should be placed to be executed before the cron job for Auto Home Backup.
 
 The backup files that will be uploaded to your Dropbox account from the configs will be located at:
 ```
 /home/Apps/Dropbox-App-Name/site-a/localhost-site-a-2016-03-02_08h55m.tar.gz
 /home/Apps/Dropbox-App-Name/site-b/localhost-site-b-2016-03-02_08h55m.tar.gz
+/home/Apps/Dropbox-App-Name/server-system/localhost-server-system-2016-03-02_08h55m.tar.gz
 ```
 
 The `Dropbox-App-Name` will be the one that you configured from [Dropbox PHP SDK - Get a Dropbox API key](https://github.com/dropbox/dropbox-sdk-php#get-a-dropbox-api-key) authentication setup.
