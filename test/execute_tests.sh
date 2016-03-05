@@ -23,10 +23,15 @@ BASEDIR=$(readlink -f $0)
 BASEDIR=$(dirname ${BASEDIR})
 cd ${BASEDIR}/..
 
+TEST_TAR_GZ="./tmp/test.tar.gz"
+
 function execute_test()
 {
 ./src/autohomebackup.sh -c "./${1}"
-./test/test_cmp.sh "./tmp/test.tar.gz" "./${2}"
+./test/test_cmp.sh "${TEST_TAR_GZ}" "./${2}"
+if [ $? -ne 0 ];then
+exit 1
+fi
 }
 
 execute_test test/test_1.conf test/expected_test_1
@@ -35,3 +40,7 @@ execute_test test/test_3.conf test/expected_test_3
 execute_test test/test_4.conf test/expected_test_4
 execute_test test/test_5.conf test/expected_test_5
 execute_test test/test_6.conf test/expected_test_6
+
+rm -f "${TEST_TAR_GZ}" 2> /dev/null
+
+exit 0

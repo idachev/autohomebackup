@@ -26,6 +26,8 @@ tar xzf "${1}" -C ${TMP_DIR}
 diff "${2}" "${TMP_DIR}" &>/dev/null
 if [ $? -ne 0 ];then
 echo "Different ${2} ${TMP_DIR}"
+exit 1
 else
 echo "Test ${2} PASS"
+exit 0
 fi
