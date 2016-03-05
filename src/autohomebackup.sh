@@ -401,6 +401,7 @@ if [ "x${DIRS_LIST_LOG}" = "x" ]; then
   DIRS_LIST+=(".")
   DIRS_LIST_LOG="\n\t."
 fi
+DIRS_LIST_LOG="\n${BASE_DIR}${DIRS_LIST_LOG}"
 
 ${ECHO} ======================================================================
 ${ECHO} Auto Home Backup Script
