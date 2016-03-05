@@ -109,9 +109,9 @@ DROPBOX_UPLOADER_CONFIG_PHP=".dropbox_uploader_php.auth"
 MAIL_CONTENT="log"
 ```
 Mail setup, what would you like to be mailed to you?
- - `log` :send only log file.
- - `stdout` :will simply output the log to the screen if run manually.
- - `quiet` :only send logs if an error occurs to the MAIL_ADDR.
+ - `log` - send only log file.
+ - `stdout` - will simply output the log to the screen if run manually.
+ - `quiet` - only send logs if an error occurs to the MAIL_ADDR.
 
 ```
 MAX_ATT_SIZE="4000"
@@ -167,9 +167,12 @@ LOG_DIR="/home/<cpaneluser>/logs/autohomebackup"
 MAIL_ADDR="admin@site-a.com"
 ```
 
-:zap: *The 'DROPBOX_DST_DIR' will be created in the Dropbox account '/home/Apps/Dropbox-App-Name/site-a'*
+:zap: *The `DROPBOX_DST_DIR` will be created in the Dropbox account `/home/Apps/Dropbox-App-Name/site-a`*
 
-:zap: *The paths in EXCLUDE option must be relative to 'BASE_DIR' or 'BASE_DIR/DIRS_TO_BACKUP'*
+:zap: The backup file that will be uploaded to your Dropbox account will be located at:
+```
+/home/Apps/Dropbox-App-Name/site-a/localhost-site-a-2016-03-02_08h55m.tar.gz
+```
 
 ### Config Example Backup Web Site B
 
@@ -191,13 +194,16 @@ LOG_DIR="/home/<cpaneluser>/logs/autohomebackup"
 MAIL_ADDR="admin@site-a.com"
 ```
 
-:zap: *The 'DROPBOX_DST_DIR' will be created in the Dropbox account '/home/Apps/Dropbox-App-Name/site-b'*
+:zap: *The `DROPBOX_DST_DIR` will be created in the Dropbox account `/home/Apps/Dropbox-App-Name/site-b`*
 
-:zap: *The paths in EXCLUDE option must be relative to 'BASE_DIR' or 'BASE_DIR/DIRS_TO_BACKUP'*
+:zap: The backup file that will be uploaded to your Dropbox account will be located at:
+```
+/home/Apps/Dropbox-App-Name/site-b/localhost-site-b-2016-03-02_08h55m.tar.gz
+```
 
 ### Config Example Backup Web Server System Data
 
-Useful to backup all of your server system logs and configs without your web site `public_html` folder.
+Useful to backup all of your server system logs and configs without your web sites `public_html` folder.
 
 `/home/<cpaneluser>/bin/autohomebackup_server-system.conf`
 
@@ -213,25 +219,23 @@ LOG_DIR="/home/<cpaneluser>/logs/autohomebackup"
 MAIL_ADDR="admin@site-a.com"
 ```
 
-:zap: *The 'DROPBOX_DST_DIR' will be created in the Dropbox account '/home/Apps/Dropbox-App-Name/server-system'*
+:zap: *The `DROPBOX_DST_DIR` will be created in the Dropbox account `/home/Apps/Dropbox-App-Name/server-system`*
 
-:zap: *The paths in EXCLUDE option must be relative to 'BASE_DIR' or 'BASE_DIR/DIRS_TO_BACKUP'*
-
-### Notes
-Replace the `<cpaneluser>` with your cPanel server user directory name or your local Linux home dir name.
-
-The `/home/<cpaneluser>/mysql-backups` from examples above is folder where [Auto MySQL Backup](https://sourceforge.net/projects/automysqlbackup/)
-is setup to regularly backup MySQL database files. Its cron job should be placed to be executed before the cron job for Auto Home Backup.
-
-The backup files that will be uploaded to your Dropbox account from the configs will be located at:
+:zap: The backup file that will be uploaded to your Dropbox account will be located at:
 ```
-/home/Apps/Dropbox-App-Name/site-a/localhost-site-a-2016-03-02_08h55m.tar.gz
-/home/Apps/Dropbox-App-Name/site-b/localhost-site-b-2016-03-02_08h55m.tar.gz
 /home/Apps/Dropbox-App-Name/server-system/localhost-server-system-2016-03-02_08h55m.tar.gz
 ```
 
-The `Dropbox-App-Name` will be the one that you configured from [Dropbox PHP SDK - Get a Dropbox API key](https://github.com/dropbox/dropbox-sdk-php#get-a-dropbox-api-key) authentication setup.
+### Notes
+:zap: Replace the `<cpaneluser>` with your cPanel server user directory name or your local Linux home dir name.
+
+:zap: The paths in `EXCLUDE` option must be relative to `BASE_DIR` or `BASE_DIR/DIRS_TO_BACKUP`
+
+:zap: The `Dropbox-App-Name` will be the one that you configured from [Dropbox PHP SDK - Get a Dropbox API key](https://github.com/dropbox/dropbox-sdk-php#get-a-dropbox-api-key) authentication setup.
+
+:zap: The `/home/<cpaneluser>/mysql-backups` from examples above is a directory where [Auto MySQL Backup](https://sourceforge.net/projects/automysqlbackup/)
+is setup to regularly backup MySQL database files. Its cron job should be placed to be executed before the cron job for Auto Home Backup.
 
 ## Credits
 
-I used the part of the code from [Auto MySQL Backup](https://sourceforge.net/projects/automysqlbackup/)
+I used some parts of the code from [Auto MySQL Backup](https://sourceforge.net/projects/automysqlbackup/)
