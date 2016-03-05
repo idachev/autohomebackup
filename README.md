@@ -4,6 +4,8 @@ Auto Home Backup script to Dropbox using bash and [Dropbox PHP SDK](https://gith
 
 License: [GNU](LICENSE)
 
+[Release v1.0.1 Direct Download](https://github.com/idachev/autohomebackup/releases/download/v1.0.1/autohomebackup_v1.0.1_20160305_030303.tar.gz)
+
 ## Description
 
 This is a simple script that can be run from a cron job on local Linux or a cPanel web hosting server.
