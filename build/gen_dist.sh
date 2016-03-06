@@ -22,15 +22,15 @@
 BASEDIR=$(readlink -f $0)
 BASEDIR=$(dirname ${BASEDIR})
 
-DROPBOX_PHP_SDK_VERSION=`cat ${BASEDIR}/dropbox-php-sdk-version.txt`
-DROPBOX_PHP_SDK="https://codeload.github.com/dropbox/dropbox-sdk-php/zip/v${DROPBOX_PHP_SDK_VERSION}"
+DROPBOX_SDK_PHP_VERSION=`cat ${BASEDIR}/dropbox-sdk-php-version.txt`
+DROPBOX_SDK_PHP="https://codeload.github.com/dropbox/dropbox-sdk-php/zip/v${DROPBOX_SDK_PHP_VERSION}"
 
-echo -e "Downloading Dropbox PHP SDK\n${DROPBOX_PHP_SDK}"
+echo -e "Downloading Dropbox SDK PHP\n${DROPBOX_SDK_PHP}"
 TMP_DIR=`mktemp -d`
 DST_ZIP="${TMP_DIR}/phpsdk.zip"
-curl -s -S -o "${DST_ZIP}" ${DROPBOX_PHP_SDK}
+curl -s -S -o "${DST_ZIP}" ${DROPBOX_SDK_PHP}
 if [ $? -ne 0 ];then
-  echo "\nDropbox PHP SDK download failed!"
+  echo "\nDropbox SDK PHP download failed!"
   exit 1
 fi
 
@@ -50,14 +50,17 @@ BUILD_NAME="autohomebackup_v${BUILD_VERSION}_${BUILD_DATE_TIME}"
 
 DIST_DIR="${BASEDIR}/dist"
 BUILD_DIR="${DIST_DIR}/${BUILD_NAME}"
+DROPBOX_SDK_PHP_DIR="${BUILD_DIR}/dropbox-sdk-php"
 mkdir -p ${BUILD_DIR}
+mkdir -p ${DROPBOX_SDK_PHP_DIR}
 
 cp -a ${BASEDIR}/../src/*sh ${BUILD_DIR}
 cp -a ${BASEDIR}/../LICENSE ${BUILD_DIR}
 cp -a ${BASEDIR}/../README.md ${BUILD_DIR}
-cp -a "${TMP_DIR_ZIP}/dropbox-sdk-php-${DROPBOX_PHP_SDK_VERSION}/lib" ${BUILD_DIR}
-cp -a "${TMP_DIR_ZIP}/dropbox-sdk-php-${DROPBOX_PHP_SDK_VERSION}/examples" ${BUILD_DIR}
-cp -a "${TMP_DIR_ZIP}/dropbox-sdk-php-${DROPBOX_PHP_SDK_VERSION}/License.txt" "${BUILD_DIR}/dropbox-sdk-php-${DROPBOX_PHP_SDK_VERSION}-License.txt"
+cp -a "${TMP_DIR_ZIP}/dropbox-sdk-php-${DROPBOX_SDK_PHP_VERSION}/lib" ${DROPBOX_SDK_PHP_DIR}
+cp -a "${TMP_DIR_ZIP}/dropbox-sdk-php-${DROPBOX_SDK_PHP_VERSION}/examples" ${DROPBOX_SDK_PHP_DIR}
+cp -a "${TMP_DIR_ZIP}/dropbox-sdk-php-${DROPBOX_SDK_PHP_VERSION}/License.txt" ${DROPBOX_SDK_PHP_DIR}
+touch ${DROPBOX_SDK_PHP_DIR}/v${DROPBOX_SDK_PHP_VERSION}
 
 sed -i "s/#BUILD_VERSION#/${BUILD_VERSION}/g" ${BUILD_DIR}/autohomebackup.sh
 sed -i "s/#BUILD_VERSION#/${BUILD_VERSION}/g" ${BUILD_DIR}/dropbox_uploader_php.sh

@@ -43,4 +43,6 @@ execute_test test/test_6.conf test/expected_test_6
 
 rm -f "${TEST_TAR_GZ}" 2> /dev/null
 
+${BASEDIR}/test_it.sh
+
 exit 0
