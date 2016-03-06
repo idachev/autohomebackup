@@ -489,17 +489,17 @@ exec 2>&7 7>&-      # Restore stdout and close file descriptor #7.
 
 if [ "${MAIL_CONTENT}" = "log" ]
 then
-  ${CAT} "${LOG_FILE}" | mail -s "Backup Log for ${HOST} - ${DATE}" ${MAIL_ADDR}
+  ${CAT} "${LOG_FILE}" | mail -s "Backup Log for ${BACKUP_NAME} at ${HOST} - ${DATE}" ${MAIL_ADDR}
   if [ -s "${LOG_ERR}" ]
     then
-      ${CAT} "${LOG_ERR}" | mail -s "ERRORS REPORTED: Backup error Log for ${HOST} - ${DATE}" ${MAIL_ADDR}
+      ${CAT} "${LOG_ERR}" | mail -s "ERRORS REPORTED: Backup error Log for ${BACKUP_NAME} at ${HOST} - ${DATE}" ${MAIL_ADDR}
   fi
 elif [ "${MAIL_CONTENT}" = "quiet" ]
 then
   if [ -s "${LOG_ERR}" ]
     then
-      ${CAT} "${LOG_ERR}" | mail -s "ERRORS REPORTED: Backup error Log for ${HOST} - ${DATE}" ${MAIL_ADDR}
-      ${CAT} "${LOG_FILE}" | mail -s "Backup Log for ${HOST} - ${DATE}" ${MAIL_ADDR}
+      ${CAT} "${LOG_ERR}" | mail -s "ERRORS REPORTED: Backup error Log for ${BACKUP_NAME} at ${HOST} - ${DATE}" ${MAIL_ADDR}
+      ${CAT} "${LOG_FILE}" | mail -s "Backup Log for ${BACKUP_NAME} at ${HOST} - ${DATE}" ${MAIL_ADDR}
   fi
 else
   if [ -s "${LOG_ERR}" ]
