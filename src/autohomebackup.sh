@@ -486,8 +486,8 @@ else
       ${CAT} "${LOG_FILE}"
       ${ECHO}
       ${ECHO} "###### WARNING ######"
-      ${ECHO} "Errors reported during AutoHomeBackup execution.. Backup failed"
-      ${ECHO} "Error log below.."
+      ${ECHO} "Errors reported during AutoHomeBackup execution... Backup failed"
+      ${ECHO} "Error log below..."
       ${CAT} "${LOG_ERR}"
   else
     ${CAT} "${LOG_FILE}"
