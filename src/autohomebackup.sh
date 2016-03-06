@@ -250,22 +250,8 @@ SCRIPT_LOC=$(${READLINK} -f $0)
 SCRIPT_NAME=$(${BASENAME} ${SCRIPT_LOC})
 SCRIPT_DIR=$(${DIRNAME} ${SCRIPT_LOC})
 
-# Check some required files
-if [ ! -r ${DROPBOX_UPLOADER_PHP} ]; then
-  ORIGIN=${DROPBOX_UPLOADER_PHP}
-  DROPBOX_UPLOADER_PHP="${SCRIPT_DIR}/${DROPBOX_UPLOADER_PHP}"
-  if [ ! -r ${DROPBOX_UPLOADER_PHP} ]; then
-    ${ECHO} -e "Dropbox uploader php file does not exists:\n\t${ORIGIN}"
-    exit 101
-  fi
-fi
-
-if [ ! -r ${DROPBOX_UPLOADER_PHP_AUTH} ]; then
-  DROPBOX_UPLOADER_PHP_AUTH="${SCRIPT_DIR}/${DROPBOX_UPLOADER_PHP_AUTH}"
-fi
-
 # Default config file
-CONFIG_FILE="${SCRIPT_DIR}/autohomebackup.conf"
+CONFIG_FILE="autohomebackup.conf"
 
 VERSION="v#BUILD_VERSION# #BUILD_DATE# #GIT_HASH#"     # Version
 CODE_LINK="https://github.com/idachev/autohomebackup"  # Link to the code
@@ -303,16 +289,6 @@ if [[ ${DEBUG} != 0 ]]; then
     set -x
 fi
 
-if [ -r ${CONFIG_FILE} ]; then
-  # Read the config file if it's existing and readable
-  source ${CONFIG_FILE}
-else
-  CONFIG_FILE="${SCRIPT_DIR}/${CONFIG_FILE}"
-  if [ -r ${CONFIG_FILE} ]; then
-    source ${CONFIG_FILE}
-  fi
-fi
-
 export LC_ALL=C
 
 PATH=/usr/local/bin:/usr/bin:/bin
@@ -337,6 +313,29 @@ function suffix_pwd()
   ${ECHO} "${l}"
 }
 
+function resolve_file()
+{
+  local file=`strip_comma "${1}"`
+  local origin=${file}
+  if [ ! -r ${file} ]; then
+    file="${SCRIPT_DIR}/${file}"
+    if [ ! -r ${file} ]; then
+      file=`suffix_pwd "${origin}"`
+    fi
+  fi
+  if [ -r ${file} ]; then
+    ${ECHO} "${file}"
+  else
+    ${ECHO} "${origin}"
+  fi
+}
+
+CONFIG_FILE=`resolve_file "${CONFIG_FILE}"`
+if [ -r ${CONFIG_FILE} ]; then
+  # Read the config file if it's existing and readable
+  source ${CONFIG_FILE}
+fi
+
 DATE=`${DATEC} +%Y-%m-%d_%Hh%Mm` # Datestamp e.g 2002-09-21
 DOW=`${DATEC} +%A`               # Day of the week e.g. Monday
 DNOW=`${DATEC} +%u`              # Day number of the week 1 to 7 where 1 represents Monday
@@ -344,7 +343,6 @@ DOM=`${DATEC} +%d`               # Date of the Month e.g. 27
 M=`${DATEC} +%B`                 # Month e.g January
 W=`${DATEC} +%V`                 # Week Number e.g 37
 
-DROPBOX_UPLOADER_PHP=`suffix_pwd "${DROPBOX_UPLOADER_PHP}"`
 BASE_DIR=`suffix_pwd "${BASE_DIR}"`
 TMP_DIR=`suffix_pwd "${TMP_DIR}"`
 LOG_DIR=`suffix_pwd "${LOG_DIR}"`
@@ -374,6 +372,17 @@ touch ${LOG_ERR}
 exec 7>&2           # Link file descriptor #7 with stderr.
                     # Saves stderr.
 exec 2> ${LOG_ERR}   # stderr replaced with file ${LOGERR}.
+
+# Check some required files
+DROPBOX_UPLOADER_PHP=`resolve_file "${DROPBOX_UPLOADER_PHP}"`
+if [ ! -r ${DROPBOX_UPLOADER_PHP} ]; then
+  ${ECHO} -e "ERROR: DROPBOX_UPLOADER_PHP file not found:\n\t${DROPBOX_UPLOADER_PHP}"
+fi
+
+DROPBOX_UPLOADER_PHP_AUTH=`resolve_file "${DROPBOX_UPLOADER_PHP_AUTH}"`
+if [ ! -r ${DROPBOX_UPLOADER_PHP_AUTH} ]; then
+  ${ECHO} -e "ERROR: DROPBOX_UPLOADER_PHP_AUTH file not found:\n\t${DROPBOX_UPLOADER_PHP_AUTH}"
+fi
 
 # Run command before we begin
 if [ "${PRE_BACKUP}" ]; then
