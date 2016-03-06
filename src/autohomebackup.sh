@@ -250,9 +250,18 @@ SCRIPT_LOC=$(${READLINK} -f $0)
 SCRIPT_NAME=$(${BASENAME} ${SCRIPT_LOC})
 SCRIPT_DIR=$(${DIRNAME} ${SCRIPT_LOC})
 
-# Fix some default config options
-if [ "${DROPBOX_UPLOADER_PHP}" = "dropbox_uploader_php.sh" ]; then
-  DROPBOX_UPLOADER_PHP="${SCRIPT_DIR}/dropbox_uploader_php.sh"
+# Check some required files
+if [ ! -r ${DROPBOX_UPLOADER_PHP} ]; then
+  ORIGIN=${DROPBOX_UPLOADER_PHP}
+  DROPBOX_UPLOADER_PHP="${SCRIPT_DIR}/${DROPBOX_UPLOADER_PHP}"
+  if [ ! -r ${DROPBOX_UPLOADER_PHP} ]; then
+    ${ECHO} -e "Dropbox uploader php file does not exists:\n\t${ORIGIN}"
+    exit 101
+  fi
+fi
+
+if [ ! -r ${DROPBOX_UPLOADER_PHP_AUTH} ]; then
+  DROPBOX_UPLOADER_PHP_AUTH="${SCRIPT_DIR}/${DROPBOX_UPLOADER_PHP_AUTH}"
 fi
 
 if [ "${DROPBOX_UPLOADER_PHP_AUTH}" = ".dropbox_uploader_php.auth" ]; then
@@ -301,6 +310,11 @@ fi
 if [ -r ${CONFIG_FILE} ]; then
   # Read the config file if it's existing and readable
   source ${CONFIG_FILE}
+else
+  CONFIG_FILE="${SCRIPT_DIR}/${CONFIG_FILE}"
+  if [ -r ${CONFIG_FILE} ]; then
+    source ${CONFIG_FILE}
+  fi
 fi
 
 export LC_ALL=C
