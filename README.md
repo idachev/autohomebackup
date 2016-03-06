@@ -135,7 +135,7 @@ Examples below are assuming that you uploaded the script release files to
 Also the script will look by default for `/home/<cpaneluser>/bin/.dropbox_uploader_php.auth`.
 This file will be generated from [Dropbox PHP SDK - Get a Dropbox API key](https://github.com/dropbox/dropbox-sdk-php#get-a-dropbox-api-key) authentication setup.
 
-### Cron Jobs
+### Cron Jobs Example
 
 Flowing are jobs to backup of `Web Site A` and `Web Site B` once a day.
 The `Server System` backup is done once a month at its 1 day.
