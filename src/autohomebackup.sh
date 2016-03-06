@@ -118,6 +118,8 @@ MAX_ATT_SIZE="4000"
 # Change Log
 #=====================================================================
 #
+# VER 1.0.4 - (2016-03-07)
+#     - Fixed to have separate dropbox-sdk-php directory
 # VER 1.0.3 - (2016-03-06)
 #     - Fixed to have only one section of config options
 # VER 1.0.2 - (2016-03-05)
