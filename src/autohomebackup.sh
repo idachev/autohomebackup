@@ -447,7 +447,7 @@ then
 fi
 ${ECHO} Backup End Time `${DATEC}`
 ${ECHO} ======================================================================
-${ECHO} If you find AutoHomeBackup valuable please make a donation at
+${ECHO} If you find AutoHomeBackup valuable please buy me a drink or two at
 ${ECHO} ${DONATE_LINK}
 ${ECHO} ======================================================================
 
