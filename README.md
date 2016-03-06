@@ -1,10 +1,10 @@
-# Auto Home Backup v1.0.2
+# Auto Home Backup v1.0.3
 
 Auto Home Backup script to Dropbox using bash and [Dropbox PHP SDK](https://github.com/dropbox/dropbox-sdk-php). Ideal for full web sites backup from cPanel.
 
 License: [GNU](LICENSE)
 
-[Latest Release v1.0.2 - Direct Download](https://github.com/idachev/autohomebackup/releases/download/v1.0.2/autohomebackup_v1.0.2_20160305_084522.tar.gz)
+[Latest Release v1.0.3 - Direct Download]()
 
 [All Releases](https://github.com/idachev/autohomebackup/releases)
 
@@ -91,7 +91,6 @@ MAIL_ADDR="user@domain.com"
 ```
 Email address to send mail to.
 
-
 ## Default Config Options
 
 ```
@@ -101,7 +100,7 @@ DROPBOX_UPLOADER_PHP="dropbox_uploader_php.sh"
   
 
 ```
-DROPBOX_UPLOADER_CONFIG_PHP=".dropbox_uploader_php.auth"
+DROPBOX_UPLOADER_PHP_AUTH=".dropbox_uploader_php.auth"
 ```
 `.dropbox_uploader_php.auth` token for more info how to create a auth file check [Dropbox PHP SDK - Get a Dropbox API key](https://github.com/dropbox/dropbox-sdk-php#get-a-dropbox-api-key) documentation
   

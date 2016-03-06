@@ -23,70 +23,55 @@
 #set -x
 
 #=====================================================================
-# START of init section
+# Do inline-config otherwise set the following variables to your system needs
 #
-# Should not need to be modified
+# To create a config file just copy the code to autohomebackup.conf between
+# "### START OF CONFIG ###" and "### END OF CONFIG ###"
 #
+# After that you're able to upgrade this script
+# (copy a new version to its location) without the need for editing it.
 #=====================================================================
 
-SCRIPT_LOC=$(readlink -f $0)
-SCRIPT_NAME=$(basename ${SCRIPT_LOC})
-SCRIPT_DIR=$(dirname ${SCRIPT_LOC})
-
-# Default config file
-CONFIG_FILE="${SCRIPT_DIR}/autohomebackup.conf"
-
-VERSION="v#BUILD_VERSION# #BUILD_DATE# #GIT_HASH#"     # Version
-CODE_LINK="https://github.com/idachev/autohomebackup"  # Link to the code
-DONATE_LINK="http://4ui.us/yqso"                       # Link to donate
-DEBUG=0
-
-# Look for optional config file parameter
-while [ ${#} -gt 0 ]; do
-  case ${1} in
-    -c)
-      CONFIG_FILE="${2}"
-      shift 2
-      ;;
-    -d)
-      DEBUG=1
-      shift 1
-      ;;
-    --help)
-      echo "Usage: ${SCRIPT_NAME} [-d] [-c CONFIG_FILE]"
-      echo -e "\t-d: Start dump debug info and messages."
-      echo -e "\t-c CONFIG_FILE: Config file to load.\n\t\tIf ommit will use values from ${CONFIG_FILE}"
-      exit 0
-      ;;
-    *)
-      echo "Unknown Option \"${1}\""
-      exit 2
-      ;;
-  esac
-done
-
-if [[ ${DEBUG} != 0 ]]; then
-    echo ${VERSION}
-    uname -a 2> /dev/null
-    cat /etc/issue 2> /dev/null
-    set -x
-fi
-
 #=====================================================================
-# END of init section
-#=====================================================================
+### START OF CONFIG ###
 
+# Destination directory on dropbox to be uploaded to
+DROPBOX_DST_DIR="/home-backup"
 
-#=====================================================================
-# START of default optional config variables
-#=====================================================================
+# Base directory to what the dirs in DIRS_TO_BACKUP and EXCLUDE are relative
+BASE_DIR="/home"
+
+# Directories array to backup, at least one should be specified
+# All directories should be relative to the BASE_DIR
+# If you want to backup all content of BASE_DIR then use: ('.')
+DIRS_TO_BACKUP=("user")
+
+# Exclude patterns array, check man tar for --exclude option
+# Do not put leading "/" in the patters as tar archive do not include them
+# If you need to use ? and * in patterns use the single-quoted: 'dir/*'
+EXCLUDE=('user/tmp_data' 'tmp' 'cache')
+
+# Host name to be used in files and logs
+BACKUP_HOST="localhost"
+
+# Backup name to be used in files and logs
+BACKUP_NAME="home"
+
+# Email Address to send mail to? (user@domain.com)
+MAIL_ADDR="user@domain.com"
+
+# Temp directory to store backup file before upload
+TMP_DIR="/home/user/tmp"
+
+# Log directory location
+LOG_DIR="/home/user/logs/autohomebackup"
 
 # dropbox_uploader_php.sh script location provided along with this script
-DROPBOX_UPLOADER_PHP="${SCRIPT_DIR}/dropbox_uploader_php.sh"
+DROPBOX_UPLOADER_PHP="dropbox_uploader_php.sh"
 
 # .dropbox_uploader_php auth token for more info how to create an
 # auth file check: https://github.com/dropbox/dropbox-sdk-php
-DROPBOX_UPLOADER_CONFIG_PHP="${SCRIPT_DIR}/.dropbox_uploader_php.auth"
+DROPBOX_UPLOADER_PHP_AUTH=".dropbox_uploader_php.auth"
 
 # Mail setup
 # What would you like to be mailed to you?
@@ -98,76 +83,14 @@ MAIL_CONTENT="log"
 # Set the maximum allowed email size in k. (4000 = approx 5MB email)
 MAX_ATT_SIZE="4000"
 
+# Command to run before backups (uncomment to use)
+#PRE_BACKUP="/etc/home-backup-pre"
+
+# Command to run after backups (uncomment to use)
+#POST_BACKUP="/etc/home-backup-post"
+
+### END OF CONFIG ###
 #=====================================================================
-# END of default optional config variables
-#=====================================================================
-
-
-#=====================================================================
-# START of required config variables
-#=====================================================================
-
-if [ -r ${CONFIG_FILE} ]; then
-  # Read the config file if it's existing and readable
-  source ${CONFIG_FILE}
-else
-  # Do inline-config otherwise
-  # Set the following variables to your system needs
-  #
-  # To create a config file just copy the code to autohomebackup.conf between
-  # "### START OF REQUIRED CONFIG ###" and "### END OF REQUIRED CONFIG ###"
-  #
-  # You can include any of the optional variables if you need to modify them.
-  #
-  # After that you're able to upgrade this script
-  # (copy a new version to its location) without the need for editing it.
-
-  ### START OF REQUIRED CONFIG ###
-
-  # Destination directory on dropbox to be uploaded to
-  DROPBOX_DST_DIR="/home-backup"
-
-  # Base directory to what the dirs in DIRS_TO_BACKUP and EXCLUDE are relative
-  BASE_DIR="/home"
-
-  # Directories array to backup, at least one should be specified
-  # All directories should be relative to the BASE_DIR
-  # If you want to backup all content of BASE_DIR then use: ('.')
-  DIRS_TO_BACKUP=("user")
-
-  # Exclude patterns array, check man tar for --exclude option
-  # Do not put leading "/" in the patters as tar archive do not include them
-  # If you need to use ? and * in patterns use the single-quoted: 'dir/*'
-  EXCLUDE=('user/tmp_data' 'tmp' 'cache')
-
-  # Host name to be used in files and logs
-  BACKUP_HOST="localhost"
-
-  # Backup name to be used in files and logs
-  BACKUP_NAME="home"
-
-  # Email Address to send mail to? (user@domain.com)
-  MAIL_ADDR="user@domain.com"
-
-  # Temp directory to store backup file before upload
-  TMP_DIR="/home/user/tmp"
-
-  # Log directory location
-  LOG_DIR="/home/user/logs/autohomebackup"
-
-  # Command to run before backups (uncomment to use)
-  #PRE_BACKUP="/etc/home-backup-pre"
-
-  # Command to run after backups (uncomment to use)
-  #POST_BACKUP="/etc/home-backup-post"
-
-  ### END OF REQUIRED CONFIG ###
-fi
-
-#=====================================================================
-# END of required config variables
-#=====================================================================
-
 
 #=====================================================================
 # Please Notes
@@ -195,6 +118,8 @@ fi
 # Change Log
 #=====================================================================
 #
+# VER 1.0.3 - (2016-03-06)
+#     - Fixed to have only one section of config options
 # VER 1.0.2 - (2016-03-05)
 #     - Fixed to use Dropbox PHP SDK 1.1.6
 #     - Separate config options to required and default ones
@@ -212,9 +137,8 @@ fi
 #=====================================================================
 #=====================================================================
 #=====================================================================
-#
+
 # Full pathname to binaries to avoid problems with aliases etc.
-#
 WHICH="`which which`"
 if [ "x${WHICH}" = "x" ]; then
     WHICH="which"
@@ -240,9 +164,19 @@ if [ "x${CAT}" = "x" ]; then
     CAT="cat"
 fi
 
+READLINK="`${WHICH} readlink`"
+if [ "x${READLINK}" = "x" ]; then
+    READLINK="readlink"
+fi
+
 BASENAME="`${WHICH} basename`"
 if [ "x${BASENAME}" = "x" ]; then
     BASENAME="basename"
+fi
+
+DIRNAME="`${WHICH} dirname`"
+if [ "x${DIRNAME}" = "x" ]; then
+    DIRNAME="dirname"
 fi
 
 DATEC="`${WHICH} date`"
@@ -285,6 +219,11 @@ if [ "x${HOSTNAMEC}" = "x" ]; then
     HOSTNAMEC="hostname"
 fi
 
+UNAME="`${WHICH} uname`"
+if [ "x${UNAME}" = "x" ]; then
+    UNAME="uname"
+fi
+
 SED="`${WHICH} sed`"
 if [ "x${SED}" = "x" ]; then
     SED="sed"
@@ -305,6 +244,63 @@ if [ "x${IONICE}" = "x" ]; then
     IONICE="ionice"
 fi
 
+SCRIPT_LOC=$(${READLINK} -f $0)
+SCRIPT_NAME=$(${BASENAME} ${SCRIPT_LOC})
+SCRIPT_DIR=$(${DIRNAME} ${SCRIPT_LOC})
+
+# Fix some default config options
+if [ "${DROPBOX_UPLOADER_PHP}" = "dropbox_uploader_php.sh" ]; then
+  DROPBOX_UPLOADER_PHP="${SCRIPT_DIR}/dropbox_uploader_php.sh"
+fi
+
+if [ "${DROPBOX_UPLOADER_PHP_AUTH}" = ".dropbox_uploader_php.auth" ]; then
+  DROPBOX_UPLOADER_PHP_AUTH="${SCRIPT_DIR}/.dropbox_uploader_php.auth"
+fi
+
+# Default config file
+CONFIG_FILE="${SCRIPT_DIR}/autohomebackup.conf"
+
+VERSION="v#BUILD_VERSION# #BUILD_DATE# #GIT_HASH#"     # Version
+CODE_LINK="https://github.com/idachev/autohomebackup"  # Link to the code
+DONATE_LINK="http://4ui.us/yqso"                       # Link to donate
+DEBUG=0
+
+# Look for optional config file parameter
+while [ ${#} -gt 0 ]; do
+  case ${1} in
+    -c)
+      CONFIG_FILE="${2}"
+      shift 2
+      ;;
+    -d)
+      DEBUG=1
+      shift 1
+      ;;
+    --help)
+      ${ECHO} "Usage: ${SCRIPT_NAME} [-d] [-c CONFIG_FILE]"
+      ${ECHO} -e "\t-d: Start dump debug info and messages."
+      ${ECHO} -e "\t-c CONFIG_FILE: Config file to load.\n\t\tIf ommit will use values from ${CONFIG_FILE}"
+      exit 0
+      ;;
+    *)
+      ${ECHO} "Unknown Option \"${1}\""
+      exit 2
+      ;;
+  esac
+done
+
+if [[ ${DEBUG} != 0 ]]; then
+    ${ECHO} ${VERSION}
+    ${UNAME} -a 2> /dev/null
+    ${CAT} /etc/issue 2> /dev/null
+    set -x
+fi
+
+if [ -r ${CONFIG_FILE} ]; then
+  # Read the config file if it's existing and readable
+  source ${CONFIG_FILE}
+fi
+
 export LC_ALL=C
 
 PATH=/usr/local/bin:/usr/bin:/bin
@@ -313,20 +309,20 @@ PATH=/usr/local/bin:/usr/bin:/bin
 function strip_comma()
 {
   local l="${1}"
-  l=`echo "${l}" | sed 's/^[ ]*//g'`
-  l=`echo "${l}" | sed 's/[ ]*$//g'`
-  l=`echo "${l}" | sed 's/^,[ ]*//g'`
-  l=`echo "${l}" | sed 's/[ ]*,$//g'`
-  echo "${l}"
+  l=`${ECHO} "${l}" | sed 's/^[ ]*//g'`
+  l=`${ECHO} "${l}" | sed 's/[ ]*$//g'`
+  l=`${ECHO} "${l}" | sed 's/^,[ ]*//g'`
+  l=`${ECHO} "${l}" | sed 's/[ ]*,$//g'`
+  ${ECHO} "${l}"
 }
 
 function suffix_pwd()
 {
   local l=`strip_comma "${1}"`
   if [[ ${l} != /* ]]; then
-    l="$PWD/${l}"
+    l="${PWD}/${l}"
   fi
-  echo "${l}"
+  ${ECHO} "${l}"
 }
 
 DATE=`${DATEC} +%Y-%m-%d_%Hh%Mm` # Datestamp e.g 2002-09-21
@@ -440,8 +436,8 @@ cd "${OLD_PWD}"
 ${ECHO}
 ${ECHO} Uploading to Dropbox Start Time `${DATEC}`
 ${ECHO} `${DU} -hs "${BACKUP_FILE}"`
-#${NICENESS} ${DROPBOX_UPLOADER} -f "${DROPBOX_UPLOADER_CONFIG}" upload "${BACKUP_FILE}" "${DST_BACKUPFILE}"
-${NICENESS} ${DROPBOX_UPLOADER_PHP} "${DROPBOX_UPLOADER_CONFIG_PHP}" "${BACKUP_FILE}" "${DST_BACKUPFILE}"
+#${NICENESS} ${DROPBOX_UPLOADER} -f "${DROPBOX_UPLOADER_AUTH}" upload "${BACKUP_FILE}" "${DST_BACKUPFILE}"
+${NICENESS} ${DROPBOX_UPLOADER_PHP} "${DROPBOX_UPLOADER_PHP_AUTH}" "${BACKUP_FILE}" "${DST_BACKUPFILE}"
 ${ECHO}
 if [ ! -s "${LOG_ERR}" ]
 then
