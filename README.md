@@ -141,9 +141,9 @@ Flowing are jobs to backup of `Web Site A` and `Web Site B` once a day.
 The `Server System` backup is done once a month at its 1 day.
 
 ```
-0 1 * * * /home/<cpaneluser>/bin/autohomebackup.sh -c /home/<cpaneluser>/bin/autohomebackup_site-a.conf
-0 2 * * * /home/<cpaneluser>/bin/autohomebackup.sh -c /home/<cpaneluser>/bin/autohomebackup_site-b.conf
-0 3 1 * * /home/<cpaneluser>/bin/autohomebackup.sh -c /home/<cpaneluser>/bin/autohomebackup_server-system.conf
+0 1 * * * /home/<cpaneluser>/bin/autohomebackup.sh -c autohomebackup_site-a.conf
+0 2 * * * /home/<cpaneluser>/bin/autohomebackup.sh -c autohomebackup_site-b.conf
+0 3 1 * * /home/<cpaneluser>/bin/autohomebackup.sh -c autohomebackup_server-system.conf
 ```
 
 ### Config Example Backup Web Site A

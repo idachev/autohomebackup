@@ -264,10 +264,6 @@ if [ ! -r ${DROPBOX_UPLOADER_PHP_AUTH} ]; then
   DROPBOX_UPLOADER_PHP_AUTH="${SCRIPT_DIR}/${DROPBOX_UPLOADER_PHP_AUTH}"
 fi
 
-if [ "${DROPBOX_UPLOADER_PHP_AUTH}" = ".dropbox_uploader_php.auth" ]; then
-  DROPBOX_UPLOADER_PHP_AUTH="${SCRIPT_DIR}/.dropbox_uploader_php.auth"
-fi
-
 # Default config file
 CONFIG_FILE="${SCRIPT_DIR}/autohomebackup.conf"
 
