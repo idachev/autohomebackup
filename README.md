@@ -1,10 +1,10 @@
-# Auto Home Backup v1.0.3
+# Auto Home Backup
 
 Auto Home Backup script to Dropbox using bash and [Dropbox SDK PHP](https://github.com/dropbox/dropbox-sdk-php). Ideal for full web sites backup from cPanel.
 
 License: [GNU](LICENSE)
 
-[Latest Release v1.0.3 - Direct Download](https://github.com/idachev/autohomebackup/releases/download/v1.0.3/autohomebackup_v1.0.3_20160306_083901.tar.gz)
+[Latest Release v1.0.4 - Direct Download]()
 
 [All Releases](https://github.com/idachev/autohomebackup/releases)
 
