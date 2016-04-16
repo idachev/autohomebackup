@@ -118,6 +118,8 @@ MAX_ATT_SIZE="4000"
 # Change Log
 #=====================================================================
 #
+# VER 1.0.5 - (2016-04-16)
+#     - Changed to store with year-month sub dir on destination backup
 # VER 1.0.4 - (2016-03-07)
 #     - Fixed to have separate dropbox-sdk-php directory
 # VER 1.0.3 - (2016-03-06)
@@ -337,6 +339,7 @@ if [ -r ${CONFIG_FILE} ]; then
 fi
 
 DATE=`${DATEC} +%Y-%m-%d_%Hh%Mm` # Datestamp e.g 2002-09-21
+YM=`${DATEC} +%Y-%m`             # Year-Month e.g 2002-09
 DOW=`${DATEC} +%A`               # Day of the week e.g. Monday
 DNOW=`${DATEC} +%u`              # Day number of the week 1 to 7 where 1 represents Monday
 DOM=`${DATEC} +%d`               # Date of the Month e.g. 27
@@ -352,7 +355,7 @@ LOG_ERR=${LOG_DIR}/${BACKUP_HOST}-${BACKUP_NAME}-${DATE}_ERRORS.log # Error Logf
 
 BACKUP_FILE_NAME=${BACKUP_HOST}-${BACKUP_NAME}-${DATE}.tar.gz
 BACKUP_FILE=${TMP_DIR}/${BACKUP_FILE_NAME}
-DST_BACKUPFILE=${DROPBOX_DST_DIR}/${BACKUP_FILE_NAME}
+DST_BACKUPFILE=${DROPBOX_DST_DIR}/${YM}/${BACKUP_FILE_NAME}
 
 TAR_OPT="czpf"
 
