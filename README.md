@@ -168,7 +168,7 @@ MAIL_ADDR="admin@site-a.com"
 
 :zap: The `DROPBOX_DST_DIR` will be created in the Dropbox account `/home/Apps/Dropbox-App-Name/site-a`
 
-:zap: The backup file that will be uploaded to your Dropbox account will be located at: `/home/Apps/Dropbox-App-Name/site-a/localhost-site-a-2016-03-02_08h55m.tar.gz`
+:zap: The backup file that will be uploaded to your Dropbox account will be located at: `/home/Apps/Dropbox-App-Name/site-a/2016-03/localhost-site-a-2016-03-02_08h55m.tar.gz`
 
 ### Config Example Backup Web Site B
 
@@ -192,7 +192,7 @@ MAIL_ADDR="admin@site-a.com"
 
 :zap: The `DROPBOX_DST_DIR` will be created in the Dropbox account `/home/Apps/Dropbox-App-Name/site-b`
 
-:zap: The backup file that will be uploaded to your Dropbox account will be located at: `/home/Apps/Dropbox-App-Name/site-b/localhost-site-b-2016-03-02_08h55m.tar.gz`
+:zap: The backup file that will be uploaded to your Dropbox account will be located at: `/home/Apps/Dropbox-App-Name/site-b/2016-03/localhost-site-b-2016-03-02_08h55m.tar.gz`
 
 ### Config Example Backup Web Server System Data
 
@@ -214,7 +214,7 @@ MAIL_ADDR="admin@site-a.com"
 
 :zap: The `DROPBOX_DST_DIR` will be created in the Dropbox account `/home/Apps/Dropbox-App-Name/server-system`
 
-:zap: The backup file that will be uploaded to your Dropbox account will be located at: `/home/Apps/Dropbox-App-Name/server-system/localhost-server-system-2016-03-02_08h55m.tar.gz`
+:zap: The backup file that will be uploaded to your Dropbox account will be located at: `/home/Apps/Dropbox-App-Name/server-system/2016-03/localhost-server-system-2016-03-02_08h55m.tar.gz`
 
 ### Notes
 :zap: Replace the `<cpaneluser>` with your cPanel server user directory name or your local Linux home dir name.
