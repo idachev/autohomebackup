@@ -121,7 +121,6 @@ MAX_ATT_SIZE="4000"
 # VER 1.0.6 - (2017-08-31)
 #     - Always remove the backup file even on error otherwise the disk
 #     is exausted too quickly
-#     - Changed to put backups in YYYY-MM sub directory
 # VER 1.0.5 - (2016-04-16)
 #     - Changed to store with year-month sub dir on destination backup
 # VER 1.0.4 - (2016-03-07)

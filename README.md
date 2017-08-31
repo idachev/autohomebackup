@@ -4,7 +4,7 @@ Auto Home Backup script to Dropbox using bash and [Dropbox SDK PHP](https://gith
 
 License: [GNU](LICENSE)
 
-[Latest Release v1.0.5 - Direct Download](https://github.com/idachev/autohomebackup/releases/download/v1.0.5/autohomebackup_v1.0.5_20160416_225716.tar.gz)
+[Latest Release v1.0.6 - Direct Download](https://github.com/idachev/autohomebackup/releases/download/v1.0.6/autohomebackup_v1.0.6_20170831_HHMMSS.tar.gz)
 
 [All Releases](https://github.com/idachev/autohomebackup/releases)
 
@@ -36,7 +36,8 @@ It is preferred to use a Dropbox App authentication, check the [Dropbox SDK PHP 
 
 ## Setup
 
-Make your own config file or directly edit the config option from the script.
+Please make your own config file for better managment.
+You could see detailed description of the config options in the script itself.
 
 Check examples below.
 
