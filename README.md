@@ -4,7 +4,7 @@ Auto Home Backup script to Dropbox using bash and [Dropbox SDK PHP](https://gith
 
 License: [GNU](LICENSE)
 
-[Latest Release v1.0.6 - Direct Download](https://github.com/idachev/autohomebackup/releases/download/v1.0.6/autohomebackup_v1.0.6_20170831_HHMMSS.tar.gz)
+[Latest Release v1.0.6 - Direct Download](https://github.com/idachev/autohomebackup/releases/download/v1.0.6/autohomebackup_v1.0.6_20170831_062543.tar.gz)
 
 [All Releases](https://github.com/idachev/autohomebackup/releases)
 
