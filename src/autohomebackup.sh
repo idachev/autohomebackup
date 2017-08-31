@@ -118,6 +118,9 @@ MAX_ATT_SIZE="4000"
 # Change Log
 #=====================================================================
 #
+# VER 1.0.6 - (2017-08-31)
+#     - Always remove the backup file even on error otherwise the disk
+#     is exausted too quickly.
 # VER 1.0.5 - (2016-04-16)
 #     - Changed to store with year-month sub dir on destination backup
 # VER 1.0.4 - (2016-03-07)
@@ -463,12 +466,9 @@ ${ECHO} `${DU} -hs "${BACKUP_FILE}"`
 #${NICENESS} ${DROPBOX_UPLOADER} -f "${DROPBOX_UPLOADER_AUTH}" upload "${BACKUP_FILE}" "${DST_BACKUPFILE}"
 ${NICENESS} ${DROPBOX_UPLOADER_PHP} "${DROPBOX_UPLOADER_PHP_AUTH}" "${BACKUP_FILE}" "${DST_BACKUPFILE}"
 ${ECHO}
-if [ ! -s "${LOG_ERR}" ]
-then
-  ${ECHO} Remove ${BACKUP_FILE}
-  eval ${RM} -f "${BACKUP_FILE}"
-  ${ECHO}
-fi
+${ECHO} Remove ${BACKUP_FILE}
+eval ${RM} -f "${BACKUP_FILE}"
+${ECHO}
 ${ECHO} Backup End Time `${DATEC}`
 ${ECHO} ======================================================================
 ${ECHO} If you find AutoHomeBackup valuable please buy me a drink or two at
