@@ -6,7 +6,7 @@ The best solution for full web sites backup from cPanel.
 
 License: [GNU](LICENSE)
 
-[Latest Release v2.0.1 - Direct Download](https://github.com/idachev/autohomebackup/releases/download/v2.0.1/autohomebackup_v2.0.1_20180110_000000.tar.gz)
+[Latest Release v2.0.1 - Direct Download](https://github.com/idachev/autohomebackup/releases/download/v2.0.1/autohomebackup_v2.0.1_20180110_111631.tar.gz)
 
 [All Releases](https://github.com/idachev/autohomebackup/releases)
 
