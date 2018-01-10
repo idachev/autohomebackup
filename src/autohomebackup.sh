@@ -67,7 +67,7 @@ TMP_DIR="/home/user/tmp"
 LOG_DIR="/home/user/logs/autohomebackup"
 
 # dropbox_uploader_php.sh script location provided along with this script
-DROPBOX_UPLOADER_PHP="dropbox_uploader_php.sh"
+DROPBOX_UPLOADER_PHP="./dropbox_uploader_php.sh"
 
 # .dropbox_uploader_php auth token for more info how to create an
 # auth file check: https://github.com/dropbox/dropbox-sdk-php
