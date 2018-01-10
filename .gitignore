@@ -1,5 +1,7 @@
-build/dist
-tmp
-logs
+/build/dist
+/tmp
+/logs
 .idea
 .*.auth
+/vendor
+

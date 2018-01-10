@@ -47,4 +47,4 @@ fi
 BASEDIR=$(${READLINK} -f $0)
 BASEDIR=$(${DIRNAME} ${BASEDIR})
 
-php "${BASEDIR}/dropbox-sdk-php/examples/upload-file.php" "$1" "$2" "$3"
+php "${BASEDIR}/dropbox_v2_uploader.php" "$1" "$2" "$3"
