@@ -22,52 +22,39 @@
 BASEDIR=$(readlink -f $0)
 BASEDIR=$(dirname ${BASEDIR})
 
-DROPBOX_SDK_PHP_VERSION=`cat ${BASEDIR}/dropbox-sdk-php-version.txt`
-DROPBOX_SDK_PHP="https://codeload.github.com/dropbox/dropbox-sdk-php/zip/v${DROPBOX_SDK_PHP_VERSION}"
-
-echo -e "Downloading Dropbox SDK PHP\n${DROPBOX_SDK_PHP}"
-TMP_DIR=`mktemp -d`
-DST_ZIP="${TMP_DIR}/phpsdk.zip"
-curl -s -S -o "${DST_ZIP}" ${DROPBOX_SDK_PHP}
-if [ $? -ne 0 ];then
-  echo "\nDropbox SDK PHP download failed!"
-  exit 1
-fi
-
-TMP_DIR_ZIP=`mktemp -d`
-unzip -qq "${DST_ZIP}" -d "${TMP_DIR_ZIP}"
-if [ $? -ne 0 ];then
-  echo -e "\nFailed to extract\n\t${DST_ZIP}\nto\n\t${TMP_DIR_ZIP}"
-  exit 1
-fi
-
 GIT_HASH=$(git rev-parse --short HEAD)
 
+cd ${BASEDIR}/..
+composer install
+cd ${BASEDIR}
+
 BUILD_VERSION=`cat ${BASEDIR}/version.txt`
+BUILD_YEAR=$(date +"%Y")
 BUILD_DATE=$(date +"%Y%m%d")
 BUILD_DATE_TIME=$(date +"%Y%m%d_%H%M%S")
 BUILD_NAME="autohomebackup_v${BUILD_VERSION}_${BUILD_DATE_TIME}"
 
 DIST_DIR="${BASEDIR}/dist"
 BUILD_DIR="${DIST_DIR}/${BUILD_NAME}"
-DROPBOX_SDK_PHP_DIR="${BUILD_DIR}/dropbox-sdk-php"
 mkdir -p ${BUILD_DIR}
-mkdir -p ${DROPBOX_SDK_PHP_DIR}
 
 cp -a ${BASEDIR}/../src/*sh ${BUILD_DIR}
+cp -a ${BASEDIR}/../src/*php ${BUILD_DIR}
+cp -a ${BASEDIR}/../src/template.dropbox_uploader_php.auth ${BUILD_DIR}/.dropbox_uploader_php.auth
 cp -a ${BASEDIR}/../LICENSE ${BUILD_DIR}
 cp -a ${BASEDIR}/../README.md ${BUILD_DIR}
-cp -a "${TMP_DIR_ZIP}/dropbox-sdk-php-${DROPBOX_SDK_PHP_VERSION}/lib" ${DROPBOX_SDK_PHP_DIR}
-cp -a "${TMP_DIR_ZIP}/dropbox-sdk-php-${DROPBOX_SDK_PHP_VERSION}/examples" ${DROPBOX_SDK_PHP_DIR}
-cp -a "${TMP_DIR_ZIP}/dropbox-sdk-php-${DROPBOX_SDK_PHP_VERSION}/License.txt" ${DROPBOX_SDK_PHP_DIR}
-touch ${DROPBOX_SDK_PHP_DIR}/v${DROPBOX_SDK_PHP_VERSION}
+cp -a ${BASEDIR}/../vendor ${BUILD_DIR}
 
-sed -i "s/#BUILD_VERSION#/${BUILD_VERSION}/g" ${BUILD_DIR}/autohomebackup.sh
-sed -i "s/#BUILD_VERSION#/${BUILD_VERSION}/g" ${BUILD_DIR}/dropbox_uploader_php.sh
-sed -i "s/#GIT_HASH#/${GIT_HASH}/g" ${BUILD_DIR}/autohomebackup.sh
-sed -i "s/#GIT_HASH#/${GIT_HASH}/g" ${BUILD_DIR}/dropbox_uploader_php.sh
-sed -i "s/#BUILD_DATE#/${BUILD_DATE}/g" ${BUILD_DIR}/autohomebackup.sh
-sed -i "s/#BUILD_DATE#/${BUILD_DATE}/g" ${BUILD_DIR}/dropbox_uploader_php.sh
+function replace_versions {
+  sed -i "s/#BUILD_VERSION#/${BUILD_VERSION}/g" ${1}
+  sed -i "s/#GIT_HASH#/${GIT_HASH}/g" ${1}
+  sed -i "s/#BUILD_DATE#/${BUILD_DATE}/g" ${1}
+  sed -i "s/#BUILD_YEAR#/${BUILD_YEAR}/g" ${1}
+}
+
+replace_versions ${BUILD_DIR}/autohomebackup.sh
+replace_versions ${BUILD_DIR}/dropbox_uploader_php.sh
+replace_versions ${BUILD_DIR}/dropbox_v2_uploader.php
 
 BUILD_FILE=${DIST_DIR}/${BUILD_NAME}.tar.gz
 tar czf "${BUILD_FILE}" -C ${DIST_DIR} ${BUILD_NAME}

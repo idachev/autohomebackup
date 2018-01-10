@@ -1,10 +1,12 @@
 # Auto Home Backup
 
-Auto Home Backup script to Dropbox using bash and [Dropbox SDK PHP](https://github.com/dropbox/dropbox-sdk-php). Ideal for full web sites backup from cPanel.
+Auto Home Backup script to Dropbox using bash and [Dropbox v2 SDK PHP](https://github.com/kunalvarma05/dropbox-php-sdk)
+
+The best solution for full web sites backup from cPanel.
 
 License: [GNU](LICENSE)
 
-[Latest Release v1.0.6 - Direct Download](https://github.com/idachev/autohomebackup/releases/download/v1.0.6/autohomebackup_v1.0.6_20170831_062543.tar.gz)
+[Latest Release v2.0.1 - Direct Download](https://github.com/idachev/autohomebackup/releases/download/v2.0.1/autohomebackup_v2.0.1_20180110_000000.tar.gz)
 
 [All Releases](https://github.com/idachev/autohomebackup/releases)
 
@@ -28,15 +30,13 @@ If you like my work and it save you a valuable time and effort, please buy me a 
 In order to use the script you need to do the following:
  1. Have a Dropbox account
  2. Create a Dropbox App Folder - you can create such application folder from your Dropbox account here [Dropbox Apps](https://www.dropbox.com/developers/apps). 
- 3. Make a Dropbox SDK PHP authentication file - steps are listed here [Dropbox SDK PHP - Get a Dropbox API key](https://github.com/dropbox/dropbox-sdk-php#get-a-dropbox-api-key).
+ 3. Make a Dropbox API token - steps are listed here [Generate Access Token](https://blogs.dropbox.com/developers/2014/05/generate-an-access-token-for-your-own-account/).
 
-These steps are done only once and you should do them from your local Linux box.
-
-It is preferred to use a Dropbox App authentication, check the [Dropbox SDK PHP - Get a Dropbox API key](https://github.com/dropbox/dropbox-sdk-php#get-a-dropbox-api-key) documentation.
+It is preferred to use a Dropbox App authentication.
 
 ## Setup
 
-Please make your own config file for better managment.
+Please make your own config file for better management.
 You could see detailed description of the config options in the script itself.
 
 Check examples below.
@@ -98,12 +98,18 @@ Email address to send mail to.
 DROPBOX_UPLOADER_PHP="dropbox_uploader_php.sh"
 ```
 `dropbox_uploader_php.sh` script location provided along with this script
-  
 
 ```
 DROPBOX_UPLOADER_PHP_AUTH=".dropbox_uploader_php.auth"
 ```
-`.dropbox_uploader_php.auth` token for more info how to create a auth file check [Dropbox SDK PHP - Get a Dropbox API key](https://github.com/dropbox/dropbox-sdk-php#get-a-dropbox-api-key) documentation
+`.dropbox_uploader_php.auth` holding a Dropbox API token.
+
+The format of the file should be:
+```
+{
+    "access_token": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+}
+``` 
   
 ```
 MAIL_CONTENT="log"
@@ -134,7 +140,6 @@ Examples below are assuming that you uploaded the script release files to
 `/home/<cpaneluser>/bin`
 
 Also the script will look by default for `/home/<cpaneluser>/bin/.dropbox_uploader_php.auth`.
-This file will be generated from [Dropbox SDK PHP - Get a Dropbox API key](https://github.com/dropbox/dropbox-sdk-php#get-a-dropbox-api-key) authentication setup.
 
 ### Cron Jobs Example
 
@@ -222,7 +227,7 @@ MAIL_ADDR="admin@site-a.com"
 
 :zap: The paths in `EXCLUDE` option must be relative to `BASE_DIR` or `BASE_DIR/DIRS_TO_BACKUP`
 
-:zap: The `Dropbox-App-Name` will be the one that you configured from [Dropbox SDK PHP - Get a Dropbox API key](https://github.com/dropbox/dropbox-sdk-php#get-a-dropbox-api-key) authentication setup.
+:zap: The `Dropbox-App-Name` will be the one for which you generated the access token.
 
 :zap: The `/home/<cpaneluser>/mysql-backups` from examples above is a directory where [Auto MySQL Backup](https://sourceforge.net/projects/automysqlbackup/)
 is setup to regularly backup MySQL database files. Its cron job should be placed to be executed before the cron job for Auto Home Backup.

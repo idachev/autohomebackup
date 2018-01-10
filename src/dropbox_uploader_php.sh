@@ -3,7 +3,7 @@
 # Auto Home Backup Dropbox Uploader PHP Script
 # v#BUILD_VERSION# #BUILD_DATE# #GIT_HASH#
 # https://github.com/idachev/autohomebackup
-# Copyright (c) 2016 Ivan Dachev
+# Copyright (c) #BUILD_YEAR# Ivan Dachev
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
-# It uses the https://github.com/dropbox/dropbox-sdk-php
+# It uses the https://github.com/kunalvarma05/dropbox-php-sdk
 #
 #=====================================================================
 #set -x

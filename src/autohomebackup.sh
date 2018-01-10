@@ -3,7 +3,7 @@
 # Auto Home Backup Script
 # v#BUILD_VERSION# #BUILD_DATE# #GIT_HASH#
 # https://github.com/idachev/autohomebackup
-# Copyright (c) 2016 Ivan Dachev
+# Copyright (c) #BUILD_YEAR# Ivan Dachev
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -118,9 +118,11 @@ MAX_ATT_SIZE="4000"
 # Change Log
 #=====================================================================
 #
+# VER 2.0.1 - (2018-01-10)
+#     - Switched to use a new PHP DropBox SDK that supports API v2
 # VER 1.0.6 - (2017-08-31)
 #     - Always remove the backup file even on error otherwise the disk
-#     is exausted too quickly
+#     is exhausted too quickly
 # VER 1.0.5 - (2016-04-16)
 #     - Changed to store with year-month sub dir on destination backup
 # VER 1.0.4 - (2016-03-07)
